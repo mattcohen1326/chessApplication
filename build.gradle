@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+
+group 'org.ooad'
+version '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.jetbrains:annotations:16.0.2'
+    compile group: 'junit', name: 'junit', version: '4.12'
+}
