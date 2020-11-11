@@ -69,10 +69,6 @@ public class Board {
         int fromIndex = getIndex(from);
         int toIndex = getIndex(to);
 
-        if (!pieces[fromIndex].getMovement().movePossible(from, to)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, movement invalid for type %s", from, to, pieces[fromIndex].getType()));
-        }
-
         pieces[toIndex] = pieces[fromIndex];
         pieces[fromIndex] = null;
     }
@@ -87,7 +83,7 @@ public class Board {
         return getPiece(location) != null;
     }
 
-    private BoardPiece getPiece(int index) {
+    private @Nullable BoardPiece getPiece(int index) {
         return pieces[index];
     }
 
