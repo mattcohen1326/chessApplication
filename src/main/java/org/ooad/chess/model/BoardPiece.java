@@ -33,18 +33,12 @@ public class BoardPiece {
 
     public void setMovementBehavior(ChessmanTypes type) {
         switch (type) {
-            case PAWN:
-                this.movement = new PawnMovement();
-            case ROOK:
-                this.movement = new RookMovement();
-            case KNIGHT:
-                this.movement = new KnightMovement();
-            case BISHOP:
-                this.movement = new BishopMovement();
-            case QUEEN:
-                this.movement = new QueenMovement();
-            case KING:
-                this.movement = new KingMovement();
+            case PAWN -> this.movement = new PawnMovement();
+            case ROOK -> this.movement = new RookMovement();
+            case KNIGHT -> this.movement = new KnightMovement();
+            case BISHOP -> this.movement = new BishopMovement();
+            case QUEEN -> this.movement = new QueenMovement();
+            case KING -> this.movement = new KingMovement();
         }
     }
 }

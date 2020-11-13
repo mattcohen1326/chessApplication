@@ -19,6 +19,11 @@ public class Board {
     private final BoardPiece[] pieces = new BoardPiece[LENGTH * LENGTH];
 
     /**
+     * Movement engine, to handle moves.
+     */
+    private final MoveEngine moveEngine = new MoveEngine(pieces, this);
+
+    /**
      * Sets a piece at a location.
      *
      * @param location The location of the target piece expressed in Chess coords. I.e.:A1,B6.
@@ -26,6 +31,7 @@ public class Board {
      */
     public void setPiece(String location, BoardPiece piece) {
         pieces[getIndex(location)] = piece;
+        updateEngine();
     }
 
     /**
@@ -56,25 +62,18 @@ public class Board {
      *
      * @param from The source location.
      * @param to   The destination.
-     * @throws IllegalStateException if the source location is empty or the destination is full.
      */
     public void movePiece(String from, String to) {
-        if (hasPiece(to)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, %s is not empty", from, to, to));
-        }
-        if (!hasPiece(from)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, %s is empty", from, to, from));
-        }
+        moveEngine.movePiece(from, to);
 
-        int fromIndex = getIndex(from);
-        int toIndex = getIndex(to);
+        updateEngine();
+    }
 
-        if(!pieces[fromIndex].getMovement().movePossible(from, to)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, pieces[fromIndex].getType()));
-        }
-
-        pieces[toIndex] = pieces[fromIndex];
-        pieces[fromIndex] = null;
+    /**
+     * Update movement engine with current board.
+     */
+    public void updateEngine() {
+        moveEngine.updateBoard(pieces);
     }
 
     /**
@@ -147,6 +146,7 @@ public class Board {
             board.setPiece(String.format("%c7", col), makePiece(PAWN, BLACK));
             board.setPiece(String.format("%c8", col), makePiece(bottomTypes[i], BLACK));
         }
+
         return board;
     }
 

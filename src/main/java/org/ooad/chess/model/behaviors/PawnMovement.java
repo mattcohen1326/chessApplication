@@ -1,8 +1,51 @@
 package org.ooad.chess.model.behaviors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PawnMovement implements MoveStrategy {
     @Override
-    public boolean movePossible(String pre, String post) {
-        return pre.charAt(0) == post.charAt(0) && pre.charAt(1) == post.charAt(1) - 1;
+    public boolean movePossible(String pre, String post, boolean firstMove, boolean eliminating) {
+        int pos1 = Math.abs(pre.charAt(0) - post.charAt(0));
+        int pos2 = Math.abs(pre.charAt(1) - post.charAt(1));
+
+        boolean b = pre.charAt(0) == post.charAt(0) && pos2 == 1;
+
+        if (firstMove) {
+            return pre.charAt(0) == post.charAt(0) && pos2 == 2 || b;
+        }
+        else if (eliminating) {
+            return pos1 == pos2;
+        }
+        return b;
+    }
+
+    @Override
+    public List<String> movePath(String pre, String post) {
+        List<String> path = new ArrayList<>();
+
+        int pos1 = Math.abs(pre.charAt(0) - post.charAt(0));
+        int pos2 = Math.abs(pre.charAt(1) - post.charAt(1));
+        int add;
+
+        int index = pre.charAt(1) - '0';
+
+        if (Math.abs(pos2 - pos1) == 2) {
+            if (pre.charAt(1) < post.charAt(1)) {
+                add = 1;
+            }
+            else {
+                add = -1;
+            }
+            for (int i = 0; i < 2; i++) {
+                path.add(String.format("%s%d", pre.charAt(0), index + (i * add)));
+            }
+        }
+        else {
+            path.add(pre);
+            path.add(post);
+        }
+
+        return path;
     }
 }
