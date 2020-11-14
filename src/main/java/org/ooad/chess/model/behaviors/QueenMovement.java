@@ -1,70 +1,27 @@
 package org.ooad.chess.model.behaviors;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueenMovement implements MoveStrategy {
+    HorizontalMovement horizontalMovement = new HorizontalMovement();
+    VerticalMovement verticalMovement = new VerticalMovement();
+    DiagonalMovement diagonalMovement = new DiagonalMovement();
+
     @Override
     public boolean movePossible(String pre, String post, boolean firstMove, boolean eliminating) {
-        int pos1 = Math.abs(pre.charAt(0) - post.charAt(0));
-        int pos2 = Math.abs(pre.charAt(1) - post.charAt(1));
-
-        if (pos1 == pos2) {
-            return true;
-        }
-
-        return pre.charAt(0) == post.charAt(0) || pre.charAt(1) == post.charAt(1);
+        return horizontalMovement.movePossible(pre, post, firstMove, eliminating) || verticalMovement.movePossible(pre, post, firstMove, eliminating) || diagonalMovement.movePossible(pre, post, firstMove, eliminating);
     }
 
     @Override
     public List<String> movePath(String pre, String post) {
-        int pos1 = Math.abs(pre.charAt(0) - post.charAt(0));
-        int pos2 = Math.abs(pre.charAt(1) - post.charAt(1));
-
-        int add1, add2;
-        int index = pre.charAt(1) - '0';
-
-        if (pos1 == pos2) {
-            if (pre.charAt(0) < post.charAt(0)) {
-                add1 = 1;
-            }
-            else {
-                add1 = -1;
-            }
-
-            if (pre.charAt(1) < post.charAt(1)) {
-                add2 = 1;
-            }
-            else {
-                add2 = -1;
-            }
+        if (horizontalMovement.movePossible(pre, post, false, false)) {
+            return horizontalMovement.movePath(pre, post);
+        }
+        else if (verticalMovement.movePossible(pre, post, false, false)) {
+            return verticalMovement.movePath(pre, post);
         }
         else {
-            if (pre.charAt(0) < post.charAt(0) || pre.charAt(1) < post.charAt(1)) {
-                if (pre.charAt(0) == post.charAt(0)) {
-                    add1 = 0;
-                    add2 = 1;
-                } else {
-                    add1 = 1;
-                    add2 = 0;
-                }
-            } else {
-                if (pre.charAt(0) == post.charAt(0)) {
-                    add1 = 0;
-                    add2 = -1;
-                } else {
-                    add1 = -1;
-                    add2 = 0;
-                }
-            }
+            return diagonalMovement.movePath(pre, post);
         }
-
-        List<String> path = new ArrayList<>();
-
-        for (int i = 0; i < Math.abs(post.charAt(0) - pre.charAt(0)); i++) {
-            path.add(String.format("%s%s", (char) (pre.charAt(0) + (i * add1)), index + (i * add2)));
-        }
-
-        return path;
     }
 }

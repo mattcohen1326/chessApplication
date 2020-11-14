@@ -51,7 +51,6 @@ public class MoveEngine {
     }
 
     public boolean isBlocked(List<String> path) {
-        System.out.println(path.get(0));
         BoardPiece current = board.getPiece(path.get(0));
 
         if (current.getType() != ChessmanTypes.KNIGHT) {
