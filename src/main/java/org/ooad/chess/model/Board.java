@@ -11,7 +11,7 @@ import static org.ooad.chess.model.ChessmanTypes.*;
  */
 public class Board {
 
-    static final int LENGTH = 8;
+    public static final int LENGTH = 8;
 
     /**
      * The actual pieces on the board. This array is indexed starting from H1 as 0.
@@ -86,7 +86,7 @@ public class Board {
         return getPiece(location) != null;
     }
 
-    private @Nullable BoardPiece getPiece(int index) {
+    public  @Nullable BoardPiece getPiece(int index) {
         return pieces[index];
     }
 
@@ -153,4 +153,9 @@ public class Board {
     private static BoardPiece makePiece(ChessmanTypes type, ChessmanColor color) {
         return new BoardPiece(type, color);
     }
+
+    public BoardPiece[] getPieces() {
+        return pieces;
+    }
+
 }
