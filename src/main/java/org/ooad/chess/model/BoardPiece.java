@@ -46,9 +46,10 @@ public class BoardPiece {
             case KING -> this.movement = new KingMovement();
         }
     }
+
     // Assumes that the White pieces will be at the top of the board and the black pieces will be at the bottom (1,1)
     public void updateMoves(String position, Board board){
-        int col = (int)position.charAt(0);
+        int col = ((int)position.charAt(0))-64;
         int row = (int)position.charAt(1);
         switch(type){
             case PAWN -> {
@@ -56,22 +57,20 @@ public class BoardPiece {
                     switch(color){
                         case WHITE ->{
                             int new_row = row - 2;
-                            StringBuilder new_pos = new StringBuilder();
-                            new_pos.append(position.charAt(0));
-                            new_pos.append(new_row);
-                            String check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)){
-                                available_moves.add(check_pos);
+                            boolean first_check = checkMove(new_row,col,board);
+                            new_row = row - 1;
+                            boolean second_check = checkMove(new_row,col,board);
+                            if(first_check && second_check){
+                                available_moves.add(stringifyMove(new_row,col));
                             }
                         }
                         case BLACK ->{
                             int new_row = row + 2;
-                            StringBuilder new_pos = new StringBuilder();
-                            new_pos.append(position.charAt(0));
-                            new_pos.append(new_row);
-                            String check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)){
-                                available_moves.add(check_pos);
+                            boolean first_check = checkMove(new_row,col,board);
+                            new_row = row + 1;
+                            boolean second_check = checkMove(new_row,col,board);
+                            if(first_check && second_check){
+                                available_moves.add(stringifyMove(new_row,col));
                             }
                         }
                     }
@@ -81,102 +80,50 @@ public class BoardPiece {
                         case WHITE ->{
                             //check forward one
                             int new_row = row + 1;
-                            StringBuilder new_pos = new StringBuilder();
-                            new_pos.append(position.charAt(0));
-                            new_pos.append(new_row);
-                            String check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)) {
-                                available_moves.add(check_pos);
-                            }
+                            if (checkMove(new_row,col,board)){
+                                available_moves.add(stringifyMove(new_row,col));
+                            };
                             //check diagonals
                             //forward right
                             new_row = row  + 1;
                             int new_col = col + 1;
-                            new_pos.setLength(0);
-                            new_pos.append((char)new_col);
-                            new_pos.append(new_row);
-                            check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)) {
-                                available_moves.add(check_pos);
-                            }
-                            else if(board.getPiece(check_pos).getColor() == ChessmanColor.BLACK){
-                                available_moves.add(check_pos);
+                            if(checkMove(new_row,new_col,board)){
+                                available_moves.add(stringifyMove(new_row,new_col));
                             }
                             //forward left
                             new_col = col - 1;
-                            new_pos.setLength(0);
-                            new_pos.append((char)new_col);
-                            new_pos.append(new_row);
-                            check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)) {
-                                available_moves.add(check_pos);
-                            }
-                            else if(board.getPiece(check_pos).getColor() == ChessmanColor.BLACK){
-                                available_moves.add(check_pos);
+                            if(checkMove(new_row,new_col,board)){
+                                available_moves.add(stringifyMove(new_row,new_col));
                             }
                         }
                         case BLACK ->{
                             //check forward one
                             int new_row = row - 1;
-                            StringBuilder new_pos = new StringBuilder();
-                            new_pos.append(position.charAt(0));
-                            new_pos.append(new_row);
-                            String check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)) {
-                                available_moves.add(check_pos);
+                            if(checkMove(new_row,col,board)){
+                                available_moves.add(stringifyMove(new_row,col));
                             }
                             //forward left
                             new_row = row - 1;
-                            int new_col = col + 1;
-                            new_pos.setLength(0);
-                            new_pos.append((char)new_col);
-                            new_pos.append(new_row);
-                            check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)) {
-                                available_moves.add(check_pos);
-                            }
-                            else if(board.getPiece(check_pos).getColor() == ChessmanColor.WHITE){
-                                available_moves.add(check_pos);
+                            int new_col = col - 1;
+                            if(checkMove(new_row,new_col,board)){
+                                available_moves.add(stringifyMove(new_row,new_col));
                             }
                             //forward right
-                            new_col = col - 1;
-                            new_pos.setLength(0);
-                            new_pos.append((char)new_col);
-                            new_pos.append(new_row);
-                            check_pos = new_pos.toString();
-                            if(!board.hasPiece(check_pos)) {
-                                available_moves.add(check_pos);
+                            new_col = col + 1;
+                            if(checkMove(new_row,new_col,board)){
+                                available_moves.add(stringifyMove(new_row,new_col));
                             }
-                            else if(board.getPiece(check_pos).getColor() == ChessmanColor.WHITE){
-                                available_moves.add(check_pos);
                             }
                         }
                     }
                 }
-            }
+                //TODO MAKE SURE YOU THINK ABOUT PIECES IN THE WAY
             case ROOK -> {
-                StringBuilder str = new StringBuilder();
                 for(int i = 1; i < 9; i++){
-                    str.append(position.charAt(0));
-                    str.append(i);
-                    String check_pos = str.toString();
-                    if(!board.hasPiece(check_pos)){
-                        available_moves.add(check_pos);
+                    if(checkMove(row,i,board)){
+
                     }
-                    else if(board.getPiece(check_pos).getColor() != color){
-                        available_moves.add(check_pos);
-                    }
-                    str.setLength(0);
-                    char new_col = (char)(i+64);
-                    str.append(new_col);
-                    str.append(row);
-                    check_pos = str.toString();
-                    if(!board.hasPiece(check_pos)){
-                        available_moves.add(check_pos);
-                    }
-                    else if(board.getPiece(check_pos).getColor() != color){
-                        available_moves.add(check_pos);
-                    }
+                    checkMove(i,col,board);
                 }
             }
             case KNIGHT ->{
@@ -185,105 +132,85 @@ public class BoardPiece {
                 //Front Left
                 int new_row = row + 2;
                 int new_col = col - 1;
-                StringBuilder str = new StringBuilder();
-                str.append((char)new_col);
-                str.append((char)new_row);
-                String check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Front right
-                str.setLength(0);
                 new_col = col + 1;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Back Right
-                str.setLength(0);
                 new_row = row - 2;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Back Left
-                str.setLength(0);
                 new_col = col - 1;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Upper Left
-                str.setLength(0);
                 new_col = col - 2;
                 new_row = row + 1;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Lower Left
-                str.setLength(0);
                 new_row = row - 1;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Upper right
-                str.setLength(0);
                 new_col = col + 2;
                 new_row = row + 1;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
-                }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Lower Right
-                str.setLength(0);
                 new_row = row + 1;
-                str.append((char)new_col);
-                str.append(new_row);
-                check_pos = str.toString();
-                if(!board.hasPiece(check_pos)){
-                    available_moves.add(check_pos);
+                if(checkMove(new_row,new_col,board)){
+                    available_moves.add(stringifyMove(new_row,new_col));
                 }
-                else if(board.getPiece(check_pos).getColor() != color){
-                    available_moves.add(check_pos);
+            }
+            case KING ->{
+                //check all six spots around
+                for(int i = (row-1);i <= (row+1); i++){
+                    for(int j = (col-1); j <= (col+1); j++){
+                        if(checkMove(i,j,board)){
+                            available_moves.add(stringifyMove(i,j));
+                        }
+                    }
                 }
-
             }
         }
+    }
+
+    private String stringifyMove(int row,int col){
+        StringBuilder str = new StringBuilder();
+        str.append((char)col+64);
+        str.append(row);
+        String check_pos = str.toString();
+        return check_pos;
+    }
+    private boolean checkMove(int row, int col, Board board){
+        if(!(row >= 1) || !(row<=8) || !(col>=1) || !(col<=8)){
+            return false;
+        }
+        else{
+            StringBuilder str = new StringBuilder();
+            str.append((char)col+64);
+            str.append(row);
+            String check_pos = str.toString();
+            if(!board.hasPiece(check_pos)){
+                return true;
+            }
+            else if(board.getPiece(check_pos).getColor() != color){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
