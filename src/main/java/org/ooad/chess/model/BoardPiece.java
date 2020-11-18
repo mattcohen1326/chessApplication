@@ -12,10 +12,13 @@ public class BoardPiece {
     private List available_moves;
     private MoveStrategy movement;
     private boolean first_move = true;
+
+    public List getAvailable_moves(){
+        return available_moves;
+    }
     public BoardPiece(ChessmanTypes type, ChessmanColor color) {
         this.type = type;
         this.color = color;
-
         setMovementBehavior(type);
     }
 
@@ -25,6 +28,10 @@ public class BoardPiece {
 
     public ChessmanTypes getType() {
         return type;
+    }
+
+    public int[] getPosition(){
+        return position;
     }
 
     public void setFirstMove(boolean first){
@@ -48,31 +55,26 @@ public class BoardPiece {
     }
 
     // Assumes that the White pieces will be at the top of the board and the black pieces will be at the bottom (1,1)
-    public void updateMoves(String position, Board board){
+    public void updateMoves(String position, MoveEngine engine){
         int col = ((int)position.charAt(0))-64;
         int row = (int)position.charAt(1);
         switch(type){
             case PAWN -> {
                 if(this.first_move){
+                    int new_row = 0;
                     switch(color){
                         case WHITE ->{
-                            int new_row = row - 2;
-                            boolean first_check = checkMove(new_row,col,board);
-                            new_row = row - 1;
-                            boolean second_check = checkMove(new_row,col,board);
-                            if(first_check && second_check){
-                                available_moves.add(stringifyMove(new_row,col));
-                            }
+                            new_row = row - 2;
+                            //boolean first_check = checkMove(new_row,col,board);
                         }
                         case BLACK ->{
-                            int new_row = row + 2;
-                            boolean first_check = checkMove(new_row,col,board);
-                            new_row = row + 1;
-                            boolean second_check = checkMove(new_row,col,board);
-                            if(first_check && second_check){
-                                available_moves.add(stringifyMove(new_row,col));
-                            }
+                            new_row = row + 2;
+                            //boolean first_check = checkMove(new_row,col,board)
                         }
+                    }
+                    boolean move = movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,col)));
+                    if(move){
+                        available_moves.add(stringifyMove(new_row,col));
                     }
                 }
                 else{
@@ -80,37 +82,36 @@ public class BoardPiece {
                         case WHITE ->{
                             //check forward one
                             int new_row = row + 1;
-                            if (checkMove(new_row,col,board)){
+                            if (movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,col)))){
                                 available_moves.add(stringifyMove(new_row,col));
-                            };
+                            }
                             //check diagonals
                             //forward right
-                            new_row = row  + 1;
                             int new_col = col + 1;
-                            if(checkMove(new_row,new_col,board)){
+                            if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                                 available_moves.add(stringifyMove(new_row,new_col));
                             }
                             //forward left
                             new_col = col - 1;
-                            if(checkMove(new_row,new_col,board)){
+                            if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                                 available_moves.add(stringifyMove(new_row,new_col));
                             }
                         }
                         case BLACK ->{
                             //check forward one
                             int new_row = row - 1;
-                            if(checkMove(new_row,col,board)){
+                            if (movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,col)))){
                                 available_moves.add(stringifyMove(new_row,col));
                             }
                             //forward left
                             new_row = row - 1;
                             int new_col = col - 1;
-                            if(checkMove(new_row,new_col,board)){
+                            if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                                 available_moves.add(stringifyMove(new_row,new_col));
                             }
                             //forward right
                             new_col = col + 1;
-                            if(checkMove(new_row,new_col,board)){
+                            if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                                 available_moves.add(stringifyMove(new_row,new_col));
                             }
                             }
@@ -120,10 +121,12 @@ public class BoardPiece {
                 //TODO MAKE SURE YOU THINK ABOUT PIECES IN THE WAY
             case ROOK -> {
                 for(int i = 1; i < 9; i++){
-                    if(checkMove(row,i,board)){
-
+                    if(movement.movePossible(stringifyMove(row,col),stringifyMove(row,i),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(row,i))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(row,i)))){
+                        available_moves.add(stringifyMove(row,i));
                     }
-                    checkMove(i,col,board);
+                    if(movement.movePossible(stringifyMove(row,col),stringifyMove(i,col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(i,col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(i,col)))){
+                        available_moves.add(stringifyMove(i,col));
+                    }
                 }
             }
             case KNIGHT ->{
@@ -132,44 +135,44 @@ public class BoardPiece {
                 //Front Left
                 int new_row = row + 2;
                 int new_col = col - 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Front right
                 new_col = col + 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Back Right
                 new_row = row - 2;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Back Left
                 new_col = col - 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Upper Left
                 new_col = col - 2;
                 new_row = row + 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Lower Left
                 new_row = row - 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Upper right
                 new_col = col + 2;
                 new_row = row + 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
                 //Lower Right
                 new_row = row + 1;
-                if(checkMove(new_row,new_col,board)){
+                if(movement.movePossible(stringifyMove(row,col),stringifyMove(new_row,new_col),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(new_row,new_col))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(new_row,new_col)))){
                     available_moves.add(stringifyMove(new_row,new_col));
                 }
             }
@@ -177,18 +180,25 @@ public class BoardPiece {
                 //check all six spots around
                 for(int i = (row-1);i <= (row+1); i++){
                     for(int j = (col-1); j <= (col+1); j++){
-                        if(checkMove(i,j,board)){
+                        if(movement.movePossible(stringifyMove(row,col),stringifyMove(i,j),first_move,engine.isEliminating(stringifyMove(row,col),stringifyMove(i,j))) && !engine.isBlocked(movement.movePath(stringifyMove(row,col),stringifyMove(i,j)))){
                             available_moves.add(stringifyMove(i,j));
                         }
                     }
                 }
             }
+            case QUEEN ->{
+
+            }
+            case BISHOP -> {
+
+            }
+
         }
     }
 
     private String stringifyMove(int row,int col){
         StringBuilder str = new StringBuilder();
-        str.append((char)col+64);
+        str.append((char)(col+64));
         str.append(row);
         String check_pos = str.toString();
         return check_pos;

@@ -82,4 +82,10 @@ public class MoveEngine {
         this.pieces = pieces;
     }
 
+    public Board getBoard(){
+        return board;
+    }
+    public BoardPiece[] getPieces() {
+        return pieces;
+    }
 }
