@@ -16,36 +16,13 @@ public class Board {
     /**
      * The actual pieces on the board. This array is indexed starting from H1 as 0.
      */
-    private final BoardPiece[] pieces = new BoardPiece[LENGTH * LENGTH];
+    private BoardPiece[] pieces = new BoardPiece[LENGTH * LENGTH];
 
     /**
      * Movement engine, to handle moves.
      */
-    private final MoveEngine moveEngine = new MoveEngine(pieces, this);
+    private final MoveEngine moveEngine = new MoveEngine(this);
 
-    /**
-     * Sets a piece at a location.
-     *
-     * @param location The location of the target piece expressed in Chess coords. I.e.:A1,B6.
-     * @param piece    The piece to be set.
-     */
-    public void setPiece(String location, BoardPiece piece) {
-        pieces[getIndex(location)] = piece;
-        updateEngine();
-    }
-
-    /**
-     * Removes a piece at a location.
-     *
-     * @param location The location to be removed.
-     * @throws IllegalStateException if the location is empty.
-     */
-    public void removePiece(String location) {
-        if (!hasPiece(location)) {
-            throw new IllegalStateException(String.format("Cannot remove %s, location is empty", location));
-        }
-        pieces[getIndex(location)] = null;
-    }
 
     /**
      * Get a piece at a location.
@@ -65,15 +42,6 @@ public class Board {
      */
     public void movePiece(String from, String to) {
         moveEngine.movePiece(from, to);
-
-        updateEngine();
-    }
-
-    /**
-     * Update movement engine with current board.
-     */
-    public void updateEngine() {
-        moveEngine.updateBoard(pieces);
     }
 
     /**
@@ -140,11 +108,11 @@ public class Board {
         Board board = new Board();
         for (int i = 0; i < LENGTH; i++) {
             char col = (char) ('A' + i);
-            board.setPiece(String.format("%c2", col), makePiece(PAWN, WHITE));
-            board.setPiece(String.format("%c1", col), makePiece(bottomTypes[i], WHITE));
+            board.moveEngine.setPiece(String.format("%c2", col), makePiece(PAWN, WHITE));
+            board.moveEngine.setPiece(String.format("%c1", col), makePiece(bottomTypes[i], WHITE));
 
-            board.setPiece(String.format("%c7", col), makePiece(PAWN, BLACK));
-            board.setPiece(String.format("%c8", col), makePiece(bottomTypes[i], BLACK));
+            board.moveEngine.setPiece(String.format("%c7", col), makePiece(PAWN, BLACK));
+            board.moveEngine.setPiece(String.format("%c8", col), makePiece(bottomTypes[i], BLACK));
         }
 
         return board;
@@ -156,6 +124,10 @@ public class Board {
 
     public BoardPiece[] getPieces() {
         return pieces;
+    }
+
+    public void update(BoardPiece[] newPieces) {
+        pieces = newPieces;
     }
 
 }

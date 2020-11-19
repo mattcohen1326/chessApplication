@@ -30,9 +30,9 @@ public class BoardPiece {
         return type;
     }
 
-    public int[] getPosition(){
+    /*public int[] getPosition(){
         return position;
-    }
+    }*/
 
     public void setFirstMove(boolean first){
         this.first_move = first;

@@ -4,10 +4,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static org.ooad.chess.model.ChessmanColor.BLACK;
+import static org.ooad.chess.model.ChessmanColor.WHITE;
+import static org.ooad.chess.model.ChessmanTypes.*;
+import static org.ooad.chess.model.ChessmanTypes.PAWN;
+
 public class MoveEngine {
 
-    MoveEngine(BoardPiece[] pieces, Board board) {
-        this.pieces = pieces;
+    MoveEngine(Board board) {
+        this.pieces = board.getPieces();
         this.board = board;
     }
 
@@ -16,6 +21,30 @@ public class MoveEngine {
     private final Board board;
 
     private Boolean firstMove = true;
+
+    /**
+     * Sets a piece at a location.
+     *
+     * @param location The location of the target piece expressed in Chess coords. I.e.:A1,B6.
+     * @param piece    The piece to be set.
+     */
+    public void setPiece(String location, BoardPiece piece) {
+        pieces[board.getIndex(location)] = piece;
+        board.update(pieces);
+    }
+
+    /**
+     * Removes a piece at a location.
+     *
+     * @param location The location to be removed.
+     * @throws IllegalStateException if the location is empty.
+     */
+    public void removePiece(String location) {
+        if (!board.hasPiece(location)) {
+            throw new IllegalStateException(String.format("Cannot remove %s, location is empty", location));
+        }
+        pieces[board.getIndex(location)] = null;
+    }
 
     /**
      * Moves a chess piece from a location to a destination.
@@ -44,8 +73,11 @@ public class MoveEngine {
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
 
-        pieces[toIndex] = pieces[fromIndex];
-        pieces[fromIndex] = null;
+        if (isEliminating(from, to)) {
+            removePiece(to);
+        }
+        setPiece(to, pieces[fromIndex]);
+        removePiece(from);
 
         firstMove = false;
     }
@@ -76,10 +108,6 @@ public class MoveEngine {
             return false;
         }
         return current.getColor() != movingTo.getColor();
-    }
-
-    public void updateBoard(BoardPiece[] pieces) {
-        this.pieces = pieces;
     }
 
     public Board getBoard(){

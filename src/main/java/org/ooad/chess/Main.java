@@ -15,6 +15,7 @@ public class Main {
         /*Board board = Board.filledBoard();
         board.movePiece("B2", "B4");
         board.movePiece("C1", "A3");
+        board.movePiece("B1", "C3");
         board.removePiece("A7");
         board.print();*/
         System.out.println(stringifyMove(1,2));
