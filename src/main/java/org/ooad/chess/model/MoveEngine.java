@@ -69,7 +69,7 @@ public class MoveEngine {
         }
 
         List<String> path = pieces[fromIndex].getMovement().movePath(from, to);
-        if (isBlocked(path) == 1 || isBlocked(path) == 2){
+        if (isBlocked(path)){
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
 
@@ -82,28 +82,22 @@ public class MoveEngine {
         firstMove = false;
     }
 
-    public int isBlocked(List<String> path) {
+    public boolean isBlocked(List<String> path) {
         BoardPiece current = board.getPiece(path.get(0));
-        //return 1 if blocked by teammate, return 2 if blocked by enemy, return 0 if move is not blocked
-        //TODO implement above logic for knight
+
         if (current.getType() != ChessmanTypes.KNIGHT) {
             for (int i = 1; i < path.size() - 1; i++) {
                 if (board.getPiece(path.get(i)) == null) {
-                    return 1;
+                    return true;
                 }
             }
         }
 
         if (board.getPiece(path.get(path.size() - 1)) != null) {
-            if (board.getPiece(path.get(path.size() - 1)).getColor() == current.getColor()){
-                return 1;
-            }
-            else{
-                return 2;
-            }
+            return board.getPiece(path.get(path.size() - 1)).getColor() == current.getColor();
         }
 
-        return 0;
+        return false;
     }
 
     public boolean isEliminating(String pre, String post) {
