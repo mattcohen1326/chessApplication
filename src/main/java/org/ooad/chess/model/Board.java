@@ -33,6 +33,13 @@ public class Board {
     public @Nullable BoardPiece getPiece(String location) {
         return getPiece(getIndex(location));
     }
+    /**
+     * Get the boards move engine
+     * @return the boards move engine
+     */
+    public MoveEngine getEngine(){
+        return moveEngine;
+    }
 
     /**
      * Moves a chess piece from a location to a destination.

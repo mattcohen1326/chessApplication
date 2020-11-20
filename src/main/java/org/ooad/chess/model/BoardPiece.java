@@ -59,7 +59,7 @@ public class BoardPiece {
         int col = ((int)position.charAt(0))-64;
         int row = (int)position.charAt(1);
         switch(type){
-            //TODO TEST THESE CASES 
+            //TODO TEST THESE CASES
             case PAWN -> {
                 if(this.first_move){
                     int new_row = 0;
@@ -186,7 +186,7 @@ public class BoardPiece {
                         }
                     }
                 }
-                for(int i = row; i < 9; i++){
+                for(int i = row; i <= engine.getBoard().LENGTH; i++){
                     int move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, col)));
                     if (movement.movePossible(stringifyMove(row, col), stringifyMove(i, col), first_move, engine.isEliminating(stringifyMove(row, col), stringifyMove(i, col)))) {
                         if (move_pos == 0) {
@@ -214,7 +214,7 @@ public class BoardPiece {
                         }
                     }
                 }
-                for(int i = col; i < 9; i++){
+                for(int i = col; i <= engine.getBoard().LENGTH; i++){
                     int move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, col)));
                     if (movement.movePossible(stringifyMove(row, col), stringifyMove(i, col), first_move, engine.isEliminating(stringifyMove(row, col), stringifyMove(i, col)))) {
                         if (move_pos == 0) {
@@ -301,8 +301,8 @@ public class BoardPiece {
                 //combine knight and bishop logic
                 int new_col = col+1;
                 int move_pos = -1;
-                for(int i = row+1; i < 9; i++){
-                    if(new_col < 9){
+                for(int i = row+1; i <= engine.getBoard().LENGTH; i++){
+                    if(new_col <= engine.getBoard().LENGTH){
                         move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, new_col)));
                     }
                     else{
@@ -345,7 +345,7 @@ public class BoardPiece {
                     new_col++;
                 } //Down and Right
                 new_col = col - 1;
-                for(int i =row+1;i<9;i++){
+                for(int i =row+1;i<= engine.getBoard().LENGTH;i++){
                     if(new_col > 0){
                         move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, new_col)));
                     }
@@ -403,7 +403,7 @@ public class BoardPiece {
                         }
                     }
                 }
-                for(int i = row; i < 9; i++){
+                for(int i = row; i <= engine.getBoard().LENGTH; i++){
                     int move_pos_2 = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, col)));
                     if (movement.movePossible(stringifyMove(row, col), stringifyMove(i, col), first_move, engine.isEliminating(stringifyMove(row, col), stringifyMove(i, col)))) {
                         if (move_pos_2 == 0) {
@@ -435,7 +435,7 @@ public class BoardPiece {
                         }
                     }
                 }
-                for(int i = col; i < 9; i++){
+                for(int i = col; i <= engine.getBoard().LENGTH; i++){
                     int move_pos_2 = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, col)));
                     if (movement.movePossible(stringifyMove(row, col), stringifyMove(i, col), first_move, engine.isEliminating(stringifyMove(row, col), stringifyMove(i, col)))) {
                         if (move_pos_2 == 0) {
@@ -454,8 +454,8 @@ public class BoardPiece {
             case BISHOP -> {
                 int new_col = col+1;
                 int move_pos = -1;
-                for(int i = row+1; i < 9; i++){
-                    if(new_col < 9){
+                for(int i = row+1; i <= engine.getBoard().LENGTH; i++){
+                    if(new_col <= engine.getBoard().LENGTH){
                         move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, new_col)));
                     }
                     else{
@@ -477,7 +477,7 @@ public class BoardPiece {
                     new_col++;
                 } //Up and right diagonal
                 for(int i = row-1; i > 0; i--){
-                    if(new_col < 9){
+                    if(new_col <= engine.getBoard().LENGTH){
                         move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, new_col)));
                     }
                     else{
@@ -498,7 +498,7 @@ public class BoardPiece {
                     new_col++;
                 } //Down and Right
                 new_col = col - 1;
-                for(int i =row+1;i<9;i++){
+                for(int i =row+1;i<= engine.getBoard().LENGTH;i++){
                     if(new_col > 0){
                         move_pos = engine.isBlocked(movement.movePath(stringifyMove(row, col), stringifyMove(i, new_col)));
                     }
