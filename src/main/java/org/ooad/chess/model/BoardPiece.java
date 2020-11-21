@@ -31,10 +31,10 @@ public class BoardPiece {
         return type;
     }
 
-    /*public int[] getPosition(){
-        return position;
-    }*/
 
+    public boolean getFirst(){
+        return first_move;
+    }
     public void setFirstMove(boolean first) {
         this.first_move = first;
         return;

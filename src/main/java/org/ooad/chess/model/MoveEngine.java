@@ -77,6 +77,7 @@ public class MoveEngine {
         if (isEliminating(from, to,false)) {
             removePiece(to);
         }
+
         if(board.getPiece(from).getType() == ChessmanTypes.PAWN){
             if(Math.abs(from.charAt(1)-to.charAt(1))==2){
                 board.getPiece(from).setEnp(true);
@@ -93,7 +94,7 @@ public class MoveEngine {
         BoardPiece current = board.getPiece(path.get(0));
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
-            for (int i = 1; i < path.size(); i++) {
+            for (int i = 1; i < path.size()-1; i++) {
                 if(board.getPiece(i) != null){
                     return true;
                 }
@@ -119,8 +120,11 @@ public class MoveEngine {
                         str.append(post.charAt(0));
                         str.append(enp_check);
                         String s = str.toString();
-                        if(board.getPiece(s).getEnp()){
-                            return true;
+                        //System.out.print(s);
+                        if(board.getPiece(s) != null){
+                            if(board.getPiece(s).getEnp()){
+                                return true;
+                            }
                         }
                     }
                     case BLACK -> {
@@ -129,8 +133,10 @@ public class MoveEngine {
                         str.append(post.charAt(0));
                         str.append(enp_check);
                         String s = str.toString();
-                        if(board.getPiece(s).getEnp()){
-                            return true;
+                        if(board.getPiece(s) != null){
+                            if(board.getPiece(s).getEnp()){
+                                return true;
+                            }
                         }
                     }
                 }

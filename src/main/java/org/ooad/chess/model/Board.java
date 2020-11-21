@@ -117,7 +117,6 @@ public class Board {
             char col = (char) ('A' + i);
             board.moveEngine.setPiece(String.format("%c2", col), makePiece(PAWN, WHITE));
             board.moveEngine.setPiece(String.format("%c1", col), makePiece(bottomTypes[i], WHITE));
-
             board.moveEngine.setPiece(String.format("%c7", col), makePiece(PAWN, BLACK));
             board.moveEngine.setPiece(String.format("%c8", col), makePiece(bottomTypes[i], BLACK));
         }
