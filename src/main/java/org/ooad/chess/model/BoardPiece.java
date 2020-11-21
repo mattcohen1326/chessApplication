@@ -12,7 +12,7 @@ public class BoardPiece {
     private List available_moves;
     private MoveStrategy movement;
     private boolean first_move = true;
-
+    private boolean enp = false;
     public List getAvailable_moves() {
         return available_moves;
     }
@@ -40,6 +40,13 @@ public class BoardPiece {
         return;
     }
 
+    public boolean getEnp(){
+        return enp;
+    }
+    public void setEnp(boolean e){
+        enp = e;
+        return;
+    }
     public MoveStrategy getMovement() {
         return movement;
     }
@@ -57,12 +64,11 @@ public class BoardPiece {
 
     // Assumes that the White pieces will be at the top of the board and the black pieces will be at the bottom (1,1)
     public void updateMoves(String position, MoveEngine engine) {
-        int col = ((int) position.charAt(0)) - 64;
-        int row = (int) position.charAt(1);
-        
+
         for (int i = 1; i <= engine.getBoard().LENGTH; i++) {
             for (int j = 1; j <= engine.getBoard().LENGTH; j++) {
-                if(movement.movePossible(position,stringifyMove(i,j),first_move,engine.isEliminating(position,stringifyMove(i,j))) && !engine.isBlocked(movement.movePath(position,stringifyMove(i,j)))){
+                boolean blocked = engine.isBlocked(movement.movePath(position,stringifyMove(i,j)));
+                if(!blocked && movement.movePossible(position,stringifyMove(i,j),first_move,engine.isEliminating(position,stringifyMove(i,j),enp))){
                     available_moves.add(stringifyMove(i,j));
                 }
             }

@@ -53,6 +53,7 @@ public class MoveEngine {
      * @param to   The destination.
      * @throws IllegalStateException if the source location is empty or the destination is full, if the move is invalid given the type, or if the move is blocked by another piece.
      */
+    //Probably need to return the board
     public void movePiece(String from, String to) {
         if (board.hasPiece(to)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is not empty", from, to, to));
@@ -64,7 +65,7 @@ public class MoveEngine {
         int fromIndex = board.getIndex(from);
         int toIndex = board.getIndex(to);
 
-        if(!pieces[fromIndex].getMovement().movePossible(from, to, firstMove, isEliminating(from, to))) {
+        if(!pieces[fromIndex].getMovement().movePossible(from, to, firstMove, isEliminating(from, to,false))) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, pieces[fromIndex].getType()));
         }
 
@@ -73,38 +74,67 @@ public class MoveEngine {
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
 
-        if (isEliminating(from, to)) {
+        if (isEliminating(from, to,false)) {
             removePiece(to);
+        }
+        if(board.getPiece(from).getType() == ChessmanTypes.PAWN){
+            if(Math.abs(from.charAt(1)-to.charAt(1))==2){
+                board.getPiece(from).setEnp(true);
+            }
         }
         setPiece(to, pieces[fromIndex]);
         removePiece(from);
-
         firstMove = false;
+
+
     }
 
     public boolean isBlocked(List<String> path) {
         BoardPiece current = board.getPiece(path.get(0));
-
+        boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
-            for (int i = 1; i < path.size() - 1; i++) {
-                if (board.getPiece(path.get(i)) == null) {
+            for (int i = 1; i < path.size(); i++) {
+                if(board.getPiece(i) != null){
                     return true;
                 }
             }
         }
-
-        if (board.getPiece(path.get(path.size() - 1)) != null) {
+        if(board.getPiece(path.get(path.size() - 1)) != null) {
             return board.getPiece(path.get(path.size() - 1)).getColor() == current.getColor();
         }
 
         return false;
     }
 
-    public boolean isEliminating(String pre, String post) {
+    public boolean isEliminating(String pre, String post, boolean enp) {
         BoardPiece current = board.getPiece(pre);
         BoardPiece movingTo = board.getPiece(post);
-
+        //assumes white on bottom
         if (movingTo == null) {
+            if(current.getType() == ChessmanTypes.PAWN){
+                switch(current.getColor()){
+                    case WHITE -> {
+                        int enp_check = post.charAt(1)-1;
+                        StringBuilder str = new StringBuilder();
+                        str.append(post.charAt(0));
+                        str.append(enp_check);
+                        String s = str.toString();
+                        if(board.getPiece(s).getEnp()){
+                            return true;
+                        }
+                    }
+                    case BLACK -> {
+                        int enp_check = post.charAt(1)+1;
+                        StringBuilder str = new StringBuilder();
+                        str.append(post.charAt(0));
+                        str.append(enp_check);
+                        String s = str.toString();
+                        if(board.getPiece(s).getEnp()){
+                            return true;
+                        }
+                    }
+                }
+            }
             return false;
         }
         return current.getColor() != movingTo.getColor();
