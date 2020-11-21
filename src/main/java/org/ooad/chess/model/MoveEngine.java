@@ -65,7 +65,7 @@ public class MoveEngine {
         int fromIndex = board.getIndex(from);
         int toIndex = board.getIndex(to);
 
-        if(!pieces[fromIndex].getMovement().movePossible(from, to, firstMove, isEliminating(from, to,false))) {
+        if(!pieces[fromIndex].getMovement().movePossible(from, to, firstMove, isEliminating(from, to))) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, pieces[fromIndex].getType()));
         }
 
@@ -74,20 +74,55 @@ public class MoveEngine {
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
 
-        if (isEliminating(from, to,false)) {
-            removePiece(to);
+        if (isEliminating(from, to)) {
+            if(board.getPiece(from).getType() == PAWN){
+                if(!board.hasPiece(to)) {
+                    switch (board.getPiece(from).getColor()) {
+                        case WHITE -> {
+                            if (board.getPiece(getNeighbor(to, "down", 1)).getEnp()) {
+                                removePiece(getNeighbor(to, "down", 1));
+                            }
+                        }
+                        case BLACK -> {
+                            if (board.getPiece(getNeighbor(to, "up", 1)).getEnp()) {
+                                removePiece(getNeighbor(to, "up", 1));
+                            }
+                        }
+                    }
+                }
+                else{
+                    removePiece(to);
+                }
+            }
+            else{
+                removePiece(to);
+            }
         }
 
-        if(board.getPiece(from).getType() == ChessmanTypes.PAWN){
-            if(Math.abs(from.charAt(1)-to.charAt(1))==2){
-                board.getPiece(from).setEnp(true);
+        if(board.getPiece(from)!=null){
+            board.getPiece(from).setFirstMove(false);
+            if(board.getPiece(from).getType() == ChessmanTypes.PAWN){
+                if(Math.abs(from.charAt(1)-to.charAt(1))==2){
+                    board.getPiece(from).setEnp(true);
+                }
             }
         }
         setPiece(to, pieces[fromIndex]);
         removePiece(from);
-        firstMove = false;
 
-
+    }
+    private String makePos(char col, char row){
+        StringBuilder s = new StringBuilder();
+        s.append(col);
+        s.append(row);
+        return s.toString();
+    }
+    private String stringifyMove(int row, int col) {
+        StringBuilder str = new StringBuilder();
+        str.append((char) (col + 64));
+        str.append(row);
+        String check_pos = str.toString();
+        return check_pos;
     }
 
     public boolean isBlocked(List<String> path) {
@@ -106,8 +141,37 @@ public class MoveEngine {
 
         return false;
     }
-
-    public boolean isEliminating(String pre, String post, boolean enp) {
+    public @Nullable String getNeighbor(String p,String dir, int amt){
+        int row = (int)p.charAt(1);
+        int col = (int)p.charAt(0)-64;
+        String neighbor = null;
+        //if(row <= board.LENGTH && row > 0 && col <= board.LENGTH && col > 0) {
+        switch(dir){
+            case "up" ->{
+                if(row+amt <= board.LENGTH){
+                    neighbor = stringifyMove(row+amt,col);
+                }
+            }
+            case "down" -> {
+                if(row-amt > 0){
+                    neighbor = stringifyMove(row-amt,col);
+                }
+            }
+            case "left" -> {
+                if(col-amt > 0){
+                    neighbor = stringifyMove(row,col-amt);
+                }
+            }
+            case "right" -> {
+                if(col+amt <= board.LENGTH){
+                    neighbor = stringifyMove(row,col+amt);
+                }
+            }
+        }
+       // }
+        return neighbor;
+    }
+    public boolean isEliminating(String pre, String post) {
         BoardPiece current = board.getPiece(pre);
         BoardPiece movingTo = board.getPiece(post);
         //assumes white on bottom

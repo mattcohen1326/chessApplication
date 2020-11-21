@@ -68,7 +68,7 @@ public class BoardPiece {
         for (int i = 1; i <= engine.getBoard().LENGTH; i++) {
             for (int j = 1; j <= engine.getBoard().LENGTH; j++) {
                 boolean blocked = engine.isBlocked(movement.movePath(position,stringifyMove(i,j)));
-                if(!blocked && movement.movePossible(position,stringifyMove(i,j),first_move,engine.isEliminating(position,stringifyMove(i,j),enp))){
+                if(!blocked && movement.movePossible(position,stringifyMove(i,j),first_move,engine.isEliminating(position,stringifyMove(i,j)))){
                     available_moves.add(stringifyMove(i,j));
                 }
             }
