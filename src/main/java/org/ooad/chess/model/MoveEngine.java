@@ -113,6 +113,7 @@ public class MoveEngine {
         isInCheckmate(to);
 
     }
+
     private String makePos(char col, char row){
         StringBuilder s = new StringBuilder();
         s.append(col);
@@ -179,31 +180,22 @@ public class MoveEngine {
         //assumes white on bottom
         if (movingTo == null) {
             if(current.getType() == ChessmanTypes.PAWN){
+                StringBuilder str = new StringBuilder();
+                int enp_check = -1;
                 switch(current.getColor()){
                     case WHITE -> {
-                        int enp_check = post.charAt(1)-1;
-                        StringBuilder str = new StringBuilder();
-                        str.append(post.charAt(0));
-                        str.append(enp_check);
-                        String s = str.toString();
-                        //System.out.print(s);
-                        if(board.getPiece(s) != null){
-                            if(board.getPiece(s).getEnp()){
-                                return true;
-                            }
-                        }
+                        enp_check = post.charAt(1)-1;
                     }
                     case BLACK -> {
-                        int enp_check = post.charAt(1)+1;
-                        StringBuilder str = new StringBuilder();
-                        str.append(post.charAt(0));
-                        str.append(enp_check);
-                        String s = str.toString();
-                        if(board.getPiece(s) != null){
-                            if(board.getPiece(s).getEnp()){
-                                return true;
-                            }
-                        }
+                        enp_check = post.charAt(1)+1;
+                    }
+                }
+                str.append(post.charAt(0));
+                str.append(enp_check);
+                String s = str.toString();
+                if(board.getPiece(s) != null){
+                    if(board.getPiece(s).getEnp()){
+                        return true;
                     }
                 }
             }
