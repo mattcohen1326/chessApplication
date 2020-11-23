@@ -13,6 +13,7 @@ public class BoardPiece {
     private MoveStrategy movement;
     private boolean first_move = true;
     private boolean enp = false;
+    private String position;
     public List getAvailable_moves() {
         return available_moves;
     }
@@ -31,7 +32,12 @@ public class BoardPiece {
         return type;
     }
 
-
+    public void setPosition(String s){
+        position = s;
+    }
+    public String getPosition(){
+        return position;
+    }
     public boolean getFirst(){
         return first_move;
     }

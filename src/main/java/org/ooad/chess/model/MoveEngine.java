@@ -2,6 +2,7 @@ package org.ooad.chess.model;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.ooad.chess.model.ChessmanColor.BLACK;
@@ -30,6 +31,7 @@ public class MoveEngine {
      */
     public void setPiece(String location, BoardPiece piece) {
         pieces[board.getIndex(location)] = piece;
+        pieces[board.getIndex(location)].setPosition(location);
         board.update(pieces);
     }
 
@@ -127,7 +129,17 @@ public class MoveEngine {
         String check_pos = str.toString();
         return check_pos;
     }
-
+    private ArrayList<BoardPiece> getColorPieces(ChessmanColor color){
+        ArrayList<BoardPiece> color_pieces = new ArrayList<BoardPiece>();
+        for(int i = 1; i <= board.LENGTH; i++){
+            for(int j = 1; j <= board.LENGTH; j++){
+                if(board.getPiece(stringifyMove(i,j)).getColor() == color){
+                    color_pieces.add(board.getPiece(stringifyMove(i,j)));
+                }
+            }
+        }
+        return color_pieces;
+    }
     public boolean isBlocked(List<String> path) {
         BoardPiece current = board.getPiece(path.get(0));
         boolean valid = true;
@@ -211,44 +223,74 @@ public class MoveEngine {
         }
         switch(color){
             case WHITE -> {
+                ArrayList<BoardPiece> enemies = getColorPieces(BLACK);
                 if(getNeighbor(king,"right",3) == rook){
                     if(getNeighbor(king,"right",1) == null && getNeighbor(king,"right",2)==null){
                         for(int i = 1; i < 3; i++){
-                            if(getNeighbor(king,"right",i)!=null){
-                                return false;
+                            for(int j = 0; j < enemies.size(); j++){
+                                if(enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition(),getNeighbor(king,"right",i),true,false)){
+                                    return false;
+                                }
                             }
-                            //NEED TO REPLACE WITH CHECK LOGIC INSTEAD OF MOVE POSSIBLE THE MOVE WONT BE POSSIBLE
-                            if(!board.getPiece(king).getMovement().movePossible(king,getNeighbor(king,"right",i),true,isEliminating(king,getNeighbor(king,"right",i)))){
-                                return false;
+                        }
+                    }
+                    else{
+                        return false;
+                    }
+                }
+                else if(getNeighbor(king,"left",4) == rook) {
+                    if (getNeighbor(king, "left", 1) == null && getNeighbor(king, "left", 2) == null && getNeighbor(king, "left", 3) == null) {
+                        for (int i = 1; i < 4; i++) {
+                            for (int j = 0; j < enemies.size(); j++) {
+                                if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition(), getNeighbor(king, "right", i), true, false)) {
+                                    return false;
+                                }
                             }
 
                         }
                     }
-                }
-                else if(getNeighbor(king,"left",4) == rook){
-                    for(int i = 1; i < 4; i++){
-                        if(getNeighbor(king,"left",i)!=null){
-                            return false;
-                        }
-                        if(!board.getPiece(king).getMovement().movePossible(king,getNeighbor(king,"left",i),true,isEliminating(king,getNeighbor(king,"left",i)))){
-                            return false;
-                        }
-
+                    else{
+                        return false;
                     }
                 }
             }
             case BLACK -> {
-                if(getNeighbor(king,"left",2) == rook){
-
+                ArrayList<BoardPiece> enemies = getColorPieces(WHITE);
+                if(getNeighbor(king,"right",4) == rook){
+                    if(getNeighbor(king,"right",1) == null && getNeighbor(king,"right",2)==null  && getNeighbor(king, "right", 3) == null){
+                        for(int i = 1; i < 3; i++){
+                            for(int j = 0; j < enemies.size(); j++){
+                                if(enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition(),getNeighbor(king,"right",i),true,false)){
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        return false;
+                    }
                 }
-                else if(getNeighbor(king,"right",3) == rook){
+                else if(getNeighbor(king,"left",3) == rook) {
+                    if (getNeighbor(king, "left", 1) == null && getNeighbor(king, "left", 2) == null) {
+                        for (int i = 1; i < 4; i++) {
+                            for (int j = 0; j < enemies.size(); j++) {
+                                if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition(), getNeighbor(king, "right", i), true, false)) {
+                                    return false;
+                                }
+                            }
 
+                        }
+                    }
+                    else{
+                        return false;
+                    }
                 }
             }
         }
 
         return true;
     }
+
     public String[] getKings() {
         String white = null, black = null;
         for (int i = 1; i <= board.LENGTH; i++) {
