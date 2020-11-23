@@ -204,6 +204,51 @@ public class MoveEngine {
         return current.getColor() != movingTo.getColor();
     }
 
+    public boolean validCastle(String king, String rook){
+        ChessmanColor color = board.getPiece(king).getColor();
+        if(!board.getPiece(king).getFirst() || !board.getPiece(rook).getFirst()){
+            return false;
+        }
+        switch(color){
+            case WHITE -> {
+                if(getNeighbor(king,"right",3) == rook){
+                    if(getNeighbor(king,"right",1) == null && getNeighbor(king,"right",2)==null){
+                        for(int i = 1; i < 3; i++){
+                            if(getNeighbor(king,"right",i)!=null){
+                                return false;
+                            }
+                            //NEED TO REPLACE WITH CHECK LOGIC INSTEAD OF MOVE POSSIBLE THE MOVE WONT BE POSSIBLE
+                            if(!board.getPiece(king).getMovement().movePossible(king,getNeighbor(king,"right",i),true,isEliminating(king,getNeighbor(king,"right",i)))){
+                                return false;
+                            }
+
+                        }
+                    }
+                }
+                else if(getNeighbor(king,"left",4) == rook){
+                    for(int i = 1; i < 4; i++){
+                        if(getNeighbor(king,"left",i)!=null){
+                            return false;
+                        }
+                        if(!board.getPiece(king).getMovement().movePossible(king,getNeighbor(king,"left",i),true,isEliminating(king,getNeighbor(king,"left",i)))){
+                            return false;
+                        }
+
+                    }
+                }
+            }
+            case BLACK -> {
+                if(getNeighbor(king,"left",2) == rook){
+
+                }
+                else if(getNeighbor(king,"right",3) == rook){
+
+                }
+            }
+        }
+
+        return true;
+    }
     public String[] getKings() {
         String white = null, black = null;
         for (int i = 1; i <= board.LENGTH; i++) {
