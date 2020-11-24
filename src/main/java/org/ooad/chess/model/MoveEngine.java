@@ -122,7 +122,7 @@ public class MoveEngine {
         s.append(row);
         return s.toString();
     }
-    private String stringifyMove(int row, int col) {
+    public String stringifyMove(int row, int col) {
         StringBuilder str = new StringBuilder();
         str.append((char) (col + 64));
         str.append(row);
