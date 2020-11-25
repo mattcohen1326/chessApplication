@@ -18,31 +18,4 @@ public class BoardTest {
         }
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testPawnBlockedError() {
-        Board board = Board.filledBoard();
-        board.movePiece("B1", "C3");
-        board.movePiece("C2", "C3");
-    }
-    @Test(expected = IllegalStateException.class)
-    public void testRookBlockedError() {
-        Board board = Board.filledBoard();
-        board.movePiece("A1", "A3");
-    }
-    @Test(expected = IllegalStateException.class)
-    public void testBishopBlockedError() {
-        Board board = Board.filledBoard();
-        board.movePiece("C1", "A3");
-    }
-    @Test(expected = IllegalStateException.class)
-    public void testQueenBlockedError() {
-        Board board = Board.filledBoard();
-        board.movePiece("D1", "B3");
-    }
-    @Test(expected = IllegalStateException.class)
-    public void testKingBlockedError() {
-        Board board = Board.filledBoard();
-        board.movePiece("E1", "E2");
-    }
-
 }

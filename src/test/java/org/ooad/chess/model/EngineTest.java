@@ -3,6 +3,34 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class EngineTest {
+
+    @Test(expected = IllegalStateException.class)
+    public void testPawnBlockedError() {
+        Board board = Board.filledBoard();
+        board.movePiece("B1", "C3");
+        board.movePiece("C2", "C3");
+    }
+    @Test(expected = IllegalStateException.class)
+    public void testRookBlockedError() {
+        Board board = Board.filledBoard();
+        board.movePiece("A1", "A3");
+    }
+    @Test(expected = IllegalStateException.class)
+    public void testBishopBlockedError() {
+        Board board = Board.filledBoard();
+        board.movePiece("C1", "A3");
+    }
+    @Test(expected = IllegalStateException.class)
+    public void testQueenBlockedError() {
+        Board board = Board.filledBoard();
+        board.movePiece("D1", "B3");
+    }
+    @Test(expected = IllegalStateException.class)
+    public void testKingBlockedError() {
+        Board board = Board.filledBoard();
+        board.movePiece("E1", "E2");
+    }
+
     Board b = Board.filledBoard();
     MoveEngine engine = new MoveEngine(b);
     @Test
@@ -76,5 +104,55 @@ public class EngineTest {
         Assert.assertEquals(true,bishop.getMovement().movePossible("D4","A1",false,false));
         Assert.assertEquals(false,bishop.getMovement().movePossible("D4","A8",false,false));
         Assert.assertEquals(true,b.getEngine().isBlocked(bishop.getMovement().movePath("D4","F6")));
+    }
+    @Test
+    public void checkKnightMoves(){
+        Board board = new Board();
+        BoardPiece knight = new BoardPiece(ChessmanTypes.KNIGHT, ChessmanColor.WHITE);
+        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        board.getEngine().setPiece("E6", toEliminate);
+        board.getEngine().setPiece("D4", knight);
+
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "E6", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "F5", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "C6", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "B5", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "E2", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "F3", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "C2", false, false));
+        Assert.assertTrue(knight.getMovement().movePossible("D4", "B3", false, false));
+        Assert.assertFalse(knight.getMovement().movePossible("D4", "A6", false, false));
+    }
+    @Test
+    public void checkQueenMoves(){
+        Board board = new Board();
+        BoardPiece queen = new BoardPiece(ChessmanTypes.QUEEN, ChessmanColor.WHITE);
+        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        board.getEngine().setPiece("E5", toEliminate);
+        board.getEngine().setPiece("D4", queen);
+
+        Assert.assertTrue(queen.getMovement().movePossible("D4", "E5", false, false));
+        Assert.assertTrue(queen.getMovement().movePossible("D4", "C5", false, false));
+        Assert.assertTrue(queen.getMovement().movePossible("D4", "D5", false, false));
+        Assert.assertTrue(queen.getMovement().movePossible("D4", "E3", false, false));
+        Assert.assertTrue(queen.getMovement().movePossible("D4", "C3", false, false));
+        Assert.assertTrue(queen.getMovement().movePossible("D4", "D3", false, false));
+        Assert.assertFalse(queen.getMovement().movePossible("D4", "E1", false, false));
+    }
+    @Test
+    public void checkKingMoves(){
+        Board board = new Board();
+        BoardPiece king = new BoardPiece(ChessmanTypes.KING, ChessmanColor.WHITE);
+        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        board.getEngine().setPiece("E5", toEliminate);
+        board.getEngine().setPiece("D4", king);
+
+        Assert.assertTrue(king.getMovement().movePossible("D4", "E5", false, false));
+        Assert.assertTrue(king.getMovement().movePossible("D4", "C5", false, false));
+        Assert.assertTrue(king.getMovement().movePossible("D4", "D5", false, false));
+        Assert.assertTrue(king.getMovement().movePossible("D4", "E3", false, false));
+        Assert.assertTrue(king.getMovement().movePossible("D4", "C3", false, false));
+        Assert.assertTrue(king.getMovement().movePossible("D4", "D3", false, false));
+        Assert.assertFalse(king.getMovement().movePossible("D4", "E1", false, false));
     }
 }
