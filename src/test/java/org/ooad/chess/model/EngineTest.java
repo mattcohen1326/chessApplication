@@ -36,6 +36,7 @@ public class EngineTest {
     @Test
     public void checkPawnMoves(){
         b = new Board();
+        engine = new MoveEngine(b);
         BoardPiece p = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.WHITE);
         engine.setPiece("D3",p);
         BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
@@ -46,5 +47,22 @@ public class EngineTest {
         Assert.assertEquals(false, engine.isBlocked(p.getMovement().movePath("D3","C4")));
         Assert.assertEquals(false, engine.isBlocked(p.getMovement().movePath("D3","E4")));
         Assert.assertEquals(true,p.getMovement().movePossible("D3","C4",false,engine.isEliminating("D3","C4")));
+    }
+    @Test
+    public void checkRookMoves(){
+        b = new Board();
+        engine = new MoveEngine(b);
+        BoardPiece r = new BoardPiece(ChessmanTypes.ROOK,ChessmanColor.WHITE);
+        engine.setPiece("A1",r);
+        Assert.assertEquals(true,r.getMovement().movePossible("A1","A8",true,false));
+        BoardPiece teammate = new BoardPiece(ChessmanTypes.PAWN,ChessmanColor.WHITE);
+        BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN,ChessmanColor.BLACK);
+        engine.setPiece("A5",teammate);
+        engine.setPiece("B1",enemy);
+        Assert.assertEquals(true,engine.isBlocked(r.getMovement().movePath("A1","A8")));
+        Assert.assertEquals(false,engine.isBlocked(r.getMovement().movePath("A1","B1")));
+
+
+
     }
 }

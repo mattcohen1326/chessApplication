@@ -22,7 +22,10 @@ public class HorizontalMovement implements MoveStrategy {
         }
 
         List<String> path = new ArrayList<>();
-
+        if( pos == 0){
+            path.add(pre);
+            path.add(post);
+        }
         for (int i = 0; i < pos; i++) {
             path.add(String.format("%s%s", (char) (pre.charAt(0) + (i * add)), pre.charAt(1)));
         }

@@ -145,7 +145,8 @@ public class MoveEngine {
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
             for (int i = 1; i < path.size()-1; i++) {
-                if(board.getPiece(i) != null){
+                System.out.println(board.getPiece(path.get(i)));
+                if(board.getPiece(path.get(i)) != null){
                     return true;
                 }
             }

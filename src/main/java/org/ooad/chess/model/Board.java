@@ -69,7 +69,7 @@ public class Board {
         return getPiece(index) != null;
     }
 
-    int getIndex(String location) {
+    public int getIndex(String location) {
         int x = LENGTH - 1 - (location.charAt(0) - 'A');
         int y = location.charAt(1) - '1';
         if (x < 0 || x >= LENGTH || y < 0 || y >= LENGTH) {
