@@ -151,7 +151,20 @@ public class MoveEngine {
             }
         }
         if(board.getPiece(path.get(path.size() - 1)) != null) {
-            return board.getPiece(path.get(path.size() - 1)).getColor() == current.getColor();
+            if(current.getType() == PAWN){
+                if(!(board.getPiece(path.get(path.size() - 1)).getColor() == current.getColor())){
+                    if(isEliminating(current.getPosition(),path.get(path.size()-1))){
+                        return false;
+                    }
+                    else{
+                        return true;
+                    }
+
+                }
+            }
+            else {
+                return board.getPiece(path.get(path.size() - 1)).getColor() == current.getColor();
+            }
         }
 
         return false;
@@ -189,6 +202,8 @@ public class MoveEngine {
     public boolean isEliminating(String pre, String post) {
         BoardPiece current = board.getPiece(pre);
         BoardPiece movingTo = board.getPiece(post);
+        int col_diff = Math.abs(pre.charAt(0)-post.charAt(0));
+        int row_diff = Math.abs(pre.charAt(1)-post.charAt(1));
         //assumes white on bottom
         if (movingTo == null) {
             if(current.getType() == ChessmanTypes.PAWN){
@@ -213,6 +228,17 @@ public class MoveEngine {
             }
             return false;
         }
+        else{
+            if(current.getType() == PAWN){
+                if(row_diff == 1 && col_diff == 1){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+
         return current.getColor() != movingTo.getColor();
     }
 

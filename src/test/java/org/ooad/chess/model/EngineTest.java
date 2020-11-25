@@ -33,4 +33,18 @@ public class EngineTest {
             Assert.assertEquals(true,b.getPiece(engine.stringifyMove(b.LENGTH-1,i)).getMovement().movePossible(engine.stringifyMove(b.LENGTH-1,i),engine.stringifyMove(b.LENGTH-3,i),true,false));
         }
     }
+    @Test
+    public void checkPawnMoves(){
+        b = new Board();
+        BoardPiece p = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.WHITE);
+        engine.setPiece("D3",p);
+        BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        engine.setPiece("D4",enemy);
+        engine.setPiece("C4",enemy);
+        engine.setPiece("E4",enemy);
+        Assert.assertEquals(true, engine.isBlocked(p.getMovement().movePath("D3","D4")));
+        Assert.assertEquals(false, engine.isBlocked(p.getMovement().movePath("D3","C4")));
+        Assert.assertEquals(false, engine.isBlocked(p.getMovement().movePath("D3","E4")));
+        Assert.assertEquals(true,p.getMovement().movePossible("D3","C4",false,engine.isEliminating("D3","C4")));
+    }
 }

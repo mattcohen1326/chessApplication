@@ -13,6 +13,8 @@ public class PawnMovement implements MoveStrategy {
         boolean forward_one = (col_diff == 0) && Math.abs(row_diff) == 1;
         boolean forward_two = (col_diff == 0) && Math.abs(row_diff) == 2;
         if(eliminating){
+            System.out.println(col_diff);
+            System.out.println(row_diff);
             return (col_diff == 1 && row_diff == 1);
         }
         if(firstMove){
