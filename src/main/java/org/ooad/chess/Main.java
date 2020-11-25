@@ -11,13 +11,13 @@ public class Main {
     }
     public static void main(String[] args) {
         Board b = new Board();
-        BoardPiece r = new BoardPiece(ChessmanTypes.ROOK, ChessmanColor.WHITE);
+        BoardPiece r = new BoardPiece(ChessmanTypes.BISHOP, ChessmanColor.WHITE);
         b.getEngine().setPiece("A1",r);
         //Assert.assertEquals(true,r.getMovement().movePossible("A1","A8",true,false));
         BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN,ChessmanColor.WHITE);
-        b.getEngine().setPiece("A5",enemy);
+        b.getEngine().setPiece("B2",enemy);
         //Assert.assertEquals(,r.getMovement().movePath("A1","A8"));
-        List<String> path = r.getMovement().movePath("A1","B1");
+        List<String> path = r.getMovement().movePath("A1","D4");
         //System.out.println(b.getIndex("A5"));
         //System.out.println(b.getPieces()[38]);
         //boolean blocked = b.getEngine().isBlocked(path);

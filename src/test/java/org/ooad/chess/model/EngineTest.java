@@ -69,9 +69,12 @@ public class EngineTest {
         b = new Board();
         BoardPiece bishop = new BoardPiece(ChessmanTypes.BISHOP,ChessmanColor.WHITE);
         b.getEngine().setPiece("D4",bishop);
+        BoardPiece enemy = new BoardPiece(ChessmanTypes.BISHOP,ChessmanColor.BLACK);
+        b.getEngine().setPiece("E5",enemy);
         Assert.assertEquals(false,bishop.getMovement().movePossible("D4","D5",false,false));
         Assert.assertEquals(true,bishop.getMovement().movePossible("D4","F6",false,false));
         Assert.assertEquals(true,bishop.getMovement().movePossible("D4","A1",false,false));
         Assert.assertEquals(false,bishop.getMovement().movePossible("D4","A8",false,false));
+        Assert.assertEquals(true,b.getEngine().isBlocked(bishop.getMovement().movePath("D4","F6")));
     }
 }

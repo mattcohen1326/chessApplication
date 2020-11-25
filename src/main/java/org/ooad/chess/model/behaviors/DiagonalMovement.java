@@ -36,7 +36,7 @@ public class DiagonalMovement implements MoveStrategy{
         for (int i = 0; i < Math.abs(post.charAt(0) - pre.charAt(0)); i++) {
             path.add(String.format("%s%s", (char) (pre.charAt(0) + (i * add1)), index + (i * add2)));
         }
-
+        path.add(post);
         return path;
 
     }
