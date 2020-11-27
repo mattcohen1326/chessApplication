@@ -42,8 +42,7 @@ public class BoardPiece {
         return first_move;
     }
     public void setFirstMove(boolean first) {
-        this.first_move = first;
-        return;
+        first_move = first;
     }
 
     public boolean getEnp(){
@@ -51,7 +50,6 @@ public class BoardPiece {
     }
     public void setEnp(boolean e){
         enp = e;
-        return;
     }
     public MoveStrategy getMovement() {
         return movement;
@@ -68,8 +66,12 @@ public class BoardPiece {
         }
     }
 
+    public void updateMoves(List availableMoves) {
+        available_moves = availableMoves;
+    }
+
     // Assumes that the White pieces will be at the top of the board and the black pieces will be at the bottom (1,1)
-    public void updateMoves(String position, MoveEngine engine) {
+    /*public void updateMoves(String position, MoveEngine engine) {
 
         for (int i = 1; i <= engine.getBoard().LENGTH; i++) {
             for (int j = 1; j <= engine.getBoard().LENGTH; j++) {
@@ -87,7 +89,7 @@ public class BoardPiece {
         str.append(row);
         String check_pos = str.toString();
         return check_pos;
-    }
+    }*/
 }
 
 

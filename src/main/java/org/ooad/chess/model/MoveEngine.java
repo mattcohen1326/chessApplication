@@ -21,8 +21,6 @@ public class MoveEngine {
 
     private final Board board;
 
-    private Boolean firstMove = true;
-
     /**
      * Sets a piece at a location.
      *
@@ -48,6 +46,25 @@ public class MoveEngine {
         pieces[board.getIndex(location)] = null;
     }
 
+    public void updateMoves(String position) {
+
+        int index = board.getIndex(position);
+        BoardPiece piece = pieces[index];
+        List<String> availableMoves = null;
+
+        for (int i = 1; i <= Board.LENGTH; i++) {
+            for (int j = 1; j <= Board.LENGTH; j++) {
+                boolean blocked = isBlocked(piece.getMovement().movePath(position,stringifyMove(i,j)));
+                if(!blocked && piece.getMovement().movePossible(position,stringifyMove(i,j),piece.getFirst(),isEliminating(position,stringifyMove(i,j)))){
+                    System.out.printf("%s%n", stringifyMove(i,j));
+                    availableMoves.add(stringifyMove(i,j));
+                }
+            }
+        }
+
+        piece.updateMoves(availableMoves);
+    }
+
     /**
      * Moves a chess piece from a location to a destination.
      *
@@ -66,14 +83,21 @@ public class MoveEngine {
         int fromIndex = board.getIndex(from);
         int toIndex = board.getIndex(to);
 
-        if(!pieces[fromIndex].getMovement().movePossible(from, to, firstMove, isEliminating(from, to))) {
+        if(!pieces[fromIndex].getMovement().movePossible(from, to, pieces[fromIndex].getFirst(), isEliminating(from, to))) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, pieces[fromIndex].getType()));
         }
+        /*updateMoves(from);
+        if (!pieces[fromIndex].getAvailable_moves().contains(to)) {
+            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, pieces[fromIndex].getType()));
+        }*/
 
         List<String> path = pieces[fromIndex].getMovement().movePath(from, to);
         if (isBlocked(path)){
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
+
+        isInCheck(to, from);
+        isInCheckmate(to, from);
 
         if (isEliminating(from, to)) {
             if(board.getPiece(from).getType() == PAWN){
@@ -111,8 +135,7 @@ public class MoveEngine {
         setPiece(to, pieces[fromIndex]);
         removePiece(from);
 
-        isInCheck(to);
-        isInCheckmate(to);
+
 
     }
 
@@ -320,8 +343,8 @@ public class MoveEngine {
 
     public String[] getKings() {
         String white = null, black = null;
-        for (int i = 1; i <= board.LENGTH; i++) {
-            for (int j = 1; j <= board.LENGTH; j++) {
+        for (int i = 1; i <= Board.LENGTH; i++) {
+            for (int j = 1; j <= Board.LENGTH; j++) {
                 String toTest = stringifyMove(i,j);
                 if (board.hasPiece(toTest)) {
                     BoardPiece pieceCur = board.getPiece(toTest);
@@ -340,9 +363,9 @@ public class MoveEngine {
         return new String[]{white, black};
     }
 
-    boolean isInCheck(String to) {
+    boolean isInCheck(String to, String from) {
         String[] kings = getKings();
-        int index = board.getIndex(to);
+        int index = board.getIndex(from);
         BoardPiece movedPiece = board.getPiece(index);
 
         if (movedPiece.getColor() == WHITE) {
@@ -353,15 +376,15 @@ public class MoveEngine {
         }
     }
 
-    boolean isInCheckmate(String to) {
+    boolean isInCheckmate(String to, String from) {
         String[] kings = getKings();
-        int movedIndex = board.getIndex(to);
+        int movedIndex = board.getIndex(from);
         int kingIndex;
         BoardPiece movedPiece = board.getPiece(movedIndex);
         BoardPiece king;
         String pos;
 
-        if (isInCheck(to)) {
+        if (isInCheck(to, from)) {
             if (movedPiece.getColor() == WHITE) {
                 kingIndex = board.getIndex(kings[1]);
                 pos = kings[1];
@@ -371,7 +394,7 @@ public class MoveEngine {
                 pos = kings[0];
             }
             king = board.getPiece(kingIndex);
-            king.updateMoves(pos, this);
+            updateMoves(pos);
 
             return king.getAvailable_moves().size() == 0;
         }
@@ -385,4 +408,6 @@ public class MoveEngine {
     public BoardPiece[] getPieces() {
         return pieces;
     }
+
+
 }
