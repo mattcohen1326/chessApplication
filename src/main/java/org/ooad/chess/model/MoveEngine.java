@@ -56,7 +56,7 @@ public class MoveEngine {
             for (int j = 1; j <= Board.LENGTH; j++) {
                 boolean blocked = isBlocked(piece.getMovement().movePath(position,stringifyMove(i,j)));
                 if(!blocked && piece.getMovement().movePossible(position,stringifyMove(i,j),piece.getFirst(),isEliminating(position,stringifyMove(i,j)))){
-                    System.out.printf("%s%n", stringifyMove(i,j));
+                    //1.out.printf("%s%n", stringifyMove(i,j));
                     availableMoves.add(stringifyMove(i,j));
                 }
             }
@@ -168,7 +168,7 @@ public class MoveEngine {
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
             for (int i = 1; i < path.size()-1; i++) {
-                System.out.println(board.getPiece(path.get(i)));
+                //System.out.println(board.getPiece(path.get(i)));
                 if(board.getPiece(path.get(i)) != null){
                     return true;
                 }
