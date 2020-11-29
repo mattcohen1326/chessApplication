@@ -133,6 +133,7 @@ public class MoveEngine {
             }
         }
         setPiece(to, pieces[fromIndex]);
+        board.getPiece(from).setFirstMove(false);;
         removePiece(from);
 
 
@@ -232,20 +233,20 @@ public class MoveEngine {
         if (movingTo == null) {
             if(current.getType() == ChessmanTypes.PAWN){
                 StringBuilder str = new StringBuilder();
-                int enp_check = -1;
+                int enp_check = 0;
                 switch(current.getColor()){
                     case WHITE -> {
-                        enp_check = post.charAt(1)-1;
+                        enp_check = Character.getNumericValue(post.charAt(1))-1;
                     }
                     case BLACK -> {
-                        enp_check = post.charAt(1)+1;
+                        enp_check = Character.getNumericValue(post.charAt(1))+1;
                     }
                 }
                 str.append(post.charAt(0));
                 str.append(enp_check);
                 String s = str.toString();
                 if(board.getPiece(s) != null){
-                    if(board.getPiece(s).getEnp()){
+                    if(board.getPiece(s).getEnp() && Math.abs(col_diff) == 1 && Math.abs(row_diff) == 1){
                         return true;
                     }
                 }

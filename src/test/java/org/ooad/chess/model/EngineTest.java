@@ -49,15 +49,11 @@ public class EngineTest {
         engine.movePiece("B4","B5");
         engine.movePiece("A7","A5");
         Assert.assertEquals(true, engine.isEliminating("B5","A6"));
-        //b = new Board();
-        /*engine = b.getEngine();
-        BoardPiece p = new BoardPiece(ChessmanTypes.PAWN,ChessmanColor.WHITE);
-        BoardPiece e = new BoardPiece(ChessmanTypes.PAWN,ChessmanColor.BLACK);
-        engine.setPiece("A2",p);
-        engine.setPiece("B4",e);
-        b.movePiece("A2","A4");
-        Assert.assertEquals(true, engine.isEliminating("B4","A3"));
-        */
+        engine.movePiece("G7","G5");
+        engine.movePiece("G5","G4");
+        engine.movePiece("F2","F4");
+        Assert.assertEquals(true, engine.isEliminating("G4","F3"));
+
     }
     @Test
     public void checkPawnForwardTwo(){

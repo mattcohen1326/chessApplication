@@ -66,7 +66,7 @@ public class AIPlayer {
                     int total_moves = moves.size();
                     int max = 0;
                     String best = "";
-                    //for each move available to that piece
+                    //for each move available for that piece
                     for(int j = 0; j < total_moves; j++) {
                         if(board.getPiece(moves.get(j)).getType() == ChessmanTypes.KING){
                             return moves.get(j);
