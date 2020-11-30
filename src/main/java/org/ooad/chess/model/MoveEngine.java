@@ -157,6 +157,9 @@ public class MoveEngine {
         ArrayList<BoardPiece> color_pieces = new ArrayList<BoardPiece>();
         for(int i = 1; i <= board.LENGTH; i++){
             for(int j = 1; j <= board.LENGTH; j++){
+                if(board.getPiece(stringifyMove(i,j)) == null){
+                    continue;
+                }
                 if(board.getPiece(stringifyMove(i,j)).getColor() == color){
                     color_pieces.add(board.getPiece(stringifyMove(i,j)));
                 }
@@ -195,7 +198,7 @@ public class MoveEngine {
         return false;
     }
     public @Nullable String getNeighbor(String p,String dir, int amt){
-        int row = (int)p.charAt(1);
+        int row = (int)p.charAt(1)-48;
         int col = (int)p.charAt(0)-64;
         String neighbor = null;
         //if(row <= board.LENGTH && row > 0 && col <= board.LENGTH && col > 0) {
@@ -275,25 +278,30 @@ public class MoveEngine {
         switch(color){
             case WHITE -> {
                 ArrayList<BoardPiece> enemies = getColorPieces(BLACK);
-                if(getNeighbor(king,"right",3) == rook){
+                System.out.println(board.getPiece(getNeighbor(king,"right",3)).getType());
+                if(board.getPiece(getNeighbor(king,"right",3)).getType() == ROOK){
                     if(getNeighbor(king,"right",1) == null && getNeighbor(king,"right",2)==null){
                         for(int i = 1; i < 3; i++){
                             for(int j = 0; j < enemies.size(); j++){
                                 if(enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition(),getNeighbor(king,"right",i),true,false)){
+                                    System.out.println(1);
                                     return false;
                                 }
                             }
                         }
                     }
                     else{
+                        System.out.println(2);
                         return false;
                     }
                 }
-                else if(getNeighbor(king,"left",4) == rook) {
+                else if(board.getPiece(getNeighbor(king,"left",4)).getType() == ROOK) {
+                    System.out.print("ok");
                     if (getNeighbor(king, "left", 1) == null && getNeighbor(king, "left", 2) == null && getNeighbor(king, "left", 3) == null) {
                         for (int i = 1; i < 4; i++) {
                             for (int j = 0; j < enemies.size(); j++) {
                                 if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition(), getNeighbor(king, "right", i), true, false)) {
+                                    System.out.println(3);
                                     return false;
                                 }
                             }
@@ -301,13 +309,14 @@ public class MoveEngine {
                         }
                     }
                     else{
+                        System.out.println(4);
                         return false;
                     }
                 }
             }
             case BLACK -> {
                 ArrayList<BoardPiece> enemies = getColorPieces(WHITE);
-                if(getNeighbor(king,"right",4) == rook){
+                if(board.getPiece(getNeighbor(king,"right",4)).getType() == ROOK){
                     if(getNeighbor(king,"right",1) == null && getNeighbor(king,"right",2)==null  && getNeighbor(king, "right", 3) == null){
                         for(int i = 1; i < 3; i++){
                             for(int j = 0; j < enemies.size(); j++){
@@ -321,7 +330,7 @@ public class MoveEngine {
                         return false;
                     }
                 }
-                else if(getNeighbor(king,"left",3) == rook) {
+                else if(board.getPiece(getNeighbor(king,"left",3)).getType() == ROOK) {
                     if (getNeighbor(king, "left", 1) == null && getNeighbor(king, "left", 2) == null) {
                         for (int i = 1; i < 4; i++) {
                             for (int j = 0; j < enemies.size(); j++) {

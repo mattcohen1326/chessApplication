@@ -158,4 +158,12 @@ public class EngineTest {
         Assert.assertTrue(king.getMovement().movePossible("D4", "D3", false, false));
         Assert.assertFalse(king.getMovement().movePossible("D4", "E1", false, false));
     }
+    @Test
+    public void checkCastling(){
+        b = Board.filledBoard();
+        b.getEngine().removePiece("F1");
+        b.getEngine().removePiece("G1");
+        Assert.assertEquals(true,b.getEngine().validCastle("E1","H1"));
+        //Assert.assertEquals(false,b.getEngine().validCastle("E1","A1"));
+    }
 }
