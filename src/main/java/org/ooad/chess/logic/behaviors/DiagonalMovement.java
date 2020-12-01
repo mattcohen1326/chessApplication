@@ -1,9 +1,9 @@
-package org.ooad.chess.model.behaviors;
+package org.ooad.chess.logic.behaviors;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DiagonalMovement implements MoveStrategy{
+public class DiagonalMovement implements MoveStrategy {
     @Override
     public boolean movePossible(String pre, String post, boolean firstMove, boolean eliminating) {
         int pos1 = Math.abs(pre.charAt(0) - post.charAt(0));
@@ -19,15 +19,13 @@ public class DiagonalMovement implements MoveStrategy{
 
         if (pre.charAt(0) < post.charAt(0)) {
             add1 = 1;
-        }
-        else {
+        } else {
             add1 = -1;
         }
 
         if (pre.charAt(1) < post.charAt(1)) {
             add2 = 1;
-        }
-        else {
+        } else {
             add2 = -1;
         }
 

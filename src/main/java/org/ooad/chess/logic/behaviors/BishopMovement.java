@@ -1,9 +1,10 @@
-package org.ooad.chess.model.behaviors;
+package org.ooad.chess.logic.behaviors;
 
 import java.util.List;
 
 public class BishopMovement implements MoveStrategy {
     DiagonalMovement diagonalMovement = new DiagonalMovement();
+
     @Override
     public boolean movePossible(String pre, String post, boolean firstMove, boolean eliminating) {
         return diagonalMovement.movePossible(pre, post, firstMove, eliminating);

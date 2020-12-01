@@ -1,7 +1,10 @@
 package org.ooad.chess.model;
 
-import org.ooad.chess.model.behaviors.*;
-import java.util.*;
+import org.ooad.chess.logic.behaviors.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a piece on a Chess board.
  */
@@ -9,13 +12,14 @@ public class BoardPiece {
 
     private final ChessmanTypes type;
     private final ChessmanColor color;
-    private List available_moves;
+    private final List<BoardPosition> availableMoves = new ArrayList<>(0);
     private MoveStrategy movement;
-    private boolean first_move = true;
+    private boolean firstMove = true;
     private boolean enp = false;
-    private String position;
-    public List getAvailable_moves() {
-        return available_moves;
+    private BoardPosition position;
+
+    public List<BoardPosition> getAvailableMoves() {
+        return availableMoves;
     }
 
     public BoardPiece(ChessmanTypes type, ChessmanColor color) {
@@ -32,25 +36,30 @@ public class BoardPiece {
         return type;
     }
 
-    public void setPosition(String s){
-        position = s;
-    }
-    public String getPosition(){
-        return position;
-    }
-    public boolean getFirst(){
-        return first_move;
-    }
-    public void setFirstMove(boolean first) {
-        first_move = first;
+    public void setPosition(BoardPosition position) {
+        this.position = position;
     }
 
-    public boolean getEnp(){
+    public BoardPosition getPosition() {
+        return position;
+    }
+
+    public boolean getFirst() {
+        return firstMove;
+    }
+
+    public void setFirstMove(boolean first) {
+        firstMove = first;
+    }
+
+    public boolean getEnp() {
         return enp;
     }
-    public void setEnp(boolean e){
+
+    public void setEnp(boolean e) {
         enp = e;
     }
+
     public MoveStrategy getMovement() {
         return movement;
     }
@@ -66,8 +75,9 @@ public class BoardPiece {
         }
     }
 
-    public void updateMoves(List availableMoves) {
-        available_moves = availableMoves;
+    public void setAvailableMoves(List<BoardPosition> availableMoves) {
+        this.availableMoves.clear();
+        this.availableMoves.addAll(availableMoves);
     }
 
     // Assumes that the White pieces will be at the top of the board and the black pieces will be at the bottom (1,1)

@@ -1,4 +1,4 @@
-package org.ooad.chess.model.behaviors;
+package org.ooad.chess.logic.behaviors;
 
 import java.util.ArrayList;
 import java.util.List;

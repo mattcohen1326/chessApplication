@@ -1,6 +1,12 @@
 package org.ooad.chess.model;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.ooad.chess.model.ChessmanColor.BLACK;
 import static org.ooad.chess.model.ChessmanColor.WHITE;
@@ -9,73 +15,54 @@ import static org.ooad.chess.model.ChessmanTypes.*;
 /**
  * Represents a chess board filled with pieces.
  */
-public class Board {
+public class Board implements Iterable<Board.Entry> {
 
     public static final int LENGTH = 8;
 
     /**
      * The actual pieces on the board. This array is indexed starting from H1 as 0.
      */
-    private BoardPiece[] pieces = new BoardPiece[LENGTH * LENGTH];
+    private final BoardPiece[] pieces = new BoardPiece[LENGTH * LENGTH];
 
     /**
-     * Movement engine, to handle moves.
-     */
-    private final MoveEngine moveEngine = new MoveEngine(this);
-
-
-    /**
-     * Get a piece at a location.
+     * Sets a piece at a location.
      *
-     * @param location The location of the target piece expressed in Chess coords. I.e.:A1,B6.
-     * @return The piece at the location, null if no piece is present.
+     * @param position The location of the target piece expressed in Chess coords. I.e.:A1,B6.
+     * @param piece    The piece to be set.
      */
-    public @Nullable BoardPiece getPiece(String location) {
-        return getPiece(getIndex(location));
-    }
-    /**
-     * Get the boards move engine
-     * @return the boards move engine
-     */
-    public MoveEngine getEngine(){
-        return moveEngine;
+    public void setPiece(BoardPosition position, BoardPiece piece) {
+        int index = getIndex(position);
+        pieces[index] = piece;
+        piece.setPosition(position);
     }
 
     /**
-     * Moves a chess piece from a location to a destination.
+     * Removes a piece at a location.
      *
-     * @param from The source location.
-     * @param to   The destination.
+     * @param position The location to be removed.
+     * @throws IllegalStateException if the location is empty.
      */
-    public void movePiece(String from, String to) {
-        moveEngine.movePiece(from, to);
+    public void removePiece(BoardPosition position) {
+        if (!hasPiece(position)) {
+            throw new IllegalStateException(String.format("Cannot remove %s, location is empty", position));
+        }
+        int index = getIndex(position);
+        pieces[index] = null;
     }
 
-    /**
-     * Checks if a piece exists at a location.
-     *
-     * @param location The location of the target piece expressed in Chess coords. I.e.:A1,B6.
-     * @return True if the space is occupied, false otherwise.
-     */
-    public boolean hasPiece(String location) {
-        return getPiece(location) != null;
-    }
-
-    public  @Nullable BoardPiece getPiece(int index) {
+    public @Nullable BoardPiece getPiece(BoardPosition position) {
+        int index = position.getRow() * LENGTH + position.getCol();
         return pieces[index];
     }
 
-    private boolean hasPiece(int index) {
-        return getPiece(index) != null;
-    }
-
-    public int getIndex(String location) {
-        int x = LENGTH - 1 - (location.charAt(0) - 'A');
-        int y = location.charAt(1) - '1';
-        if (x < 0 || x >= LENGTH || y < 0 || y >= LENGTH) {
-            throw new IllegalArgumentException("Invalid location " + location);
-        }
-        return y * LENGTH + x;
+    /**
+     * Checks if a piece exists at a position.
+     *
+     * @param position The position of the target piece expressed in Chess coords. I.e.:A1,B6.
+     * @return True if the space is occupied, false otherwise.
+     */
+    public boolean hasPiece(BoardPosition position) {
+        return getPiece(position) != null;
     }
 
     /**
@@ -87,8 +74,8 @@ public class Board {
             if (i % LENGTH == LENGTH - 1) {
                 sb.append(i / LENGTH + 1).append("|");
             }
-            if (hasPiece(i)) {
-                BoardPiece piece = getPiece(i);
+            if (pieces[i] != null) {
+                BoardPiece piece = pieces[i];
                 sb.append(piece.getType().getString(piece.getColor())).append(" ");
             } else {
                 sb.append("-\u3000");
@@ -105,20 +92,24 @@ public class Board {
         System.out.println(sb.toString());
     }
 
+    private int getIndex(BoardPosition position) {
+        return position.getRow() * LENGTH + position.getCol();
+    }
+
     /**
      * Create a new, populated, chess board.
      *
      * @return - a new chess board with the standard piece configuration
      */
     public static Board filledBoard() {
-        ChessmanTypes[] bottomTypes = {ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, ROOK, KNIGHT};
+        ChessmanTypes[] bottomTypes = {ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK};
         Board board = new Board();
-        for (int i = 0; i < LENGTH; i++) {
-            char col = (char) ('A' + i);
-            board.moveEngine.setPiece(String.format("%c2", col), makePiece(PAWN, WHITE));
-            board.moveEngine.setPiece(String.format("%c1", col), makePiece(bottomTypes[i], WHITE));
-            board.moveEngine.setPiece(String.format("%c7", col), makePiece(PAWN, BLACK));
-            board.moveEngine.setPiece(String.format("%c8", col), makePiece(bottomTypes[i], BLACK));
+        for (int col = 0; col < LENGTH; col++) {
+            board.setPiece(new BoardPosition(1, col), makePiece(PAWN, WHITE));
+            board.setPiece(new BoardPosition(0, col), makePiece(bottomTypes[col], WHITE));
+
+            board.setPiece(new BoardPosition(6, col), makePiece(PAWN, BLACK));
+            board.setPiece(new BoardPosition(7, col), makePiece(bottomTypes[col], BLACK));
         }
 
         return board;
@@ -129,11 +120,38 @@ public class Board {
     }
 
     public BoardPiece[] getPieces() {
-        return pieces;
+        return Arrays.copyOf(pieces, pieces.length);
     }
 
-    public void update(BoardPiece[] newPieces) {
-        pieces = newPieces;
+    @NotNull
+    @Override
+    public Iterator<Entry> iterator() {
+        List<Entry> entries = new ArrayList<>(LENGTH * LENGTH);
+        for (int row = 0; row < LENGTH; row++) {
+            for (int col = 0; col < LENGTH; col++) {
+                BoardPosition position = new BoardPosition(row, col);
+                BoardPiece piece = getPiece(position);
+                entries.add(new Entry(position, piece));
+            }
+        }
+        return entries.iterator();
     }
 
+    public static class Entry {
+        private final BoardPosition position;
+        private final BoardPiece piece;
+
+        public Entry(BoardPosition position, @Nullable BoardPiece piece) {
+            this.position = position;
+            this.piece = piece;
+        }
+
+        public BoardPiece getPiece() {
+            return piece;
+        }
+
+        public BoardPosition getPosition() {
+            return position;
+        }
+    }
 }

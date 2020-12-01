@@ -49,7 +49,7 @@ public class Window extends JFrame implements GLEventListener {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            System.out.printf("FPS: %d%n", animator.getFPS());
+//            System.out.printf("FPS: %d%n", animator.getFPS());
         }
     }
 
