@@ -238,18 +238,26 @@ public class MoveEngine {
     }
 
     public boolean validCastle(String king, String rook) {
+        if(getPiece(rook) == null || getPiece(king) == null){
+            return false;
+        }
         ChessmanColor color = getPiece(king).getColor();
         if (!getPiece(king).getFirst() || !getPiece(rook).getFirst()) {
             return false;
         }
+        //IT IS A BISHOP IT SHOULD BE A ROOK
+        System.out.println((getNeighbor(king, "left", 4)).equals(rook));
+        System.out.println(rook);
+        System.out.println(getPiece(getNeighbor(king, "left", 4)).getType());
         switch (color) {
             case WHITE -> {
                 ArrayList<BoardPiece> enemies = getColorPieces(BLACK);
-                if (getPiece(getNeighbor(king, "right", 3)).getType() == ROOK) {
-                    if (getNeighbor(king, "right", 1) == null && getNeighbor(king, "right", 2) == null) {
+                if (getPiece(getNeighbor(king, "right", 3)).getType() == ChessmanTypes.ROOK && getNeighbor(king,"right",3).equals(rook)) {
+                    if (getPiece(getNeighbor(king, "right", 1)) == null && getPiece(getNeighbor(king, "right", 2)) == null) {
                         for (int i = 1; i < 3; i++) {
                             for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
+                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, true)) {
+
                                     return false;
                                 }
                             }
@@ -257,28 +265,31 @@ public class MoveEngine {
                     } else {
                         return false;
                     }
-                } else if (getPiece(getNeighbor(king, "left", 4)).getType() == ROOK) {
-                    if (getNeighbor(king, "left", 1) == null && getNeighbor(king, "left", 2) == null && getNeighbor(king, "left", 3) == null) {
+                }
+                else if (getPiece(getNeighbor(king, "left", 4)).getType() == ROOK && getNeighbor(king,"left",4).equals(rook)) {
+                    if (getPiece(getNeighbor(king, "left", 1)) == null && getPiece(getNeighbor(king, "left", 2)) == null && getPiece(getNeighbor(king, "left", 3)) == null) {
                         for (int i = 1; i < 4; i++) {
                             for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
+                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, true)) {
+                                    System.out.println("hm");
                                     return false;
                                 }
                             }
 
                         }
-                    } else {
+                    }
+                    else {
                         return false;
                     }
                 }
             }
             case BLACK -> {
                 ArrayList<BoardPiece> enemies = getColorPieces(WHITE);
-                if (getPiece(getNeighbor(king,"right",4)).getType() == ROOK) {
-                    if (getNeighbor(king, "right", 1) == null && getNeighbor(king, "right", 2) == null && getNeighbor(king, "right", 3) == null) {
+                if (getPiece(getNeighbor(king,"right",4)).getType() == ROOK && getNeighbor(king,"right",4).equals(rook)) {
+                    if (getPiece(getNeighbor(king, "right", 1)) == null && getPiece(getNeighbor(king, "right", 2)) == null && getNeighbor(king, "right", 3) == null) {
                         for (int i = 1; i < 3; i++) {
                             for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
+                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
                                     return false;
                                 }
                             }
@@ -286,17 +297,19 @@ public class MoveEngine {
                     } else {
                         return false;
                     }
-                } else if (getPiece(getNeighbor(king,"left",3)).getType() == ROOK) {
-                    if (getNeighbor(king, "left", 1) == null && getNeighbor(king, "left", 2) == null) {
+                } else if (getPiece(getNeighbor(king,"left",3)).getType() == ROOK && getNeighbor(king,"left",3).equals(rook)) {
+
+                    if (getPiece(getNeighbor(king, "left", 1)) == null && getPiece(getNeighbor(king, "left", 2)) == null) {
                         for (int i = 1; i < 4; i++) {
                             for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(i).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
+                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
                                     return false;
                                 }
                             }
 
                         }
-                    } else {
+                    }
+                    else {
                         return false;
                     }
                 }
@@ -392,7 +405,7 @@ public class MoveEngine {
         return position.getRow() * LENGTH + position.getCol();
     }
 
-    private void removePiece(String location) {
+    public void removePiece(String location) {
         board.removePiece(new BoardPosition(location));
     }
 }

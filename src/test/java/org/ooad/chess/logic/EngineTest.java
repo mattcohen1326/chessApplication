@@ -184,10 +184,14 @@ public class EngineTest {
 
     @Test
     public void checkCastling() {
-        board.removePiece(new BoardPosition("F1"));
-        board.removePiece(new BoardPosition("G1"));
-        Assert.assertEquals(true, engine.validCastle("E1", "H1"));
-        //Assert.assertEquals(false,b.getEngine().validCastle("E1","A1"));
+        board.removePiece(new BoardPosition("C8"));
+        board.removePiece(new BoardPosition("B8"));
+        board.removePiece(new BoardPosition("B1"));
+        board.removePiece(new BoardPosition("C1"));
+        board.removePiece(new BoardPosition("D1"));
+        //Assert.assertEquals(true, engine.validCastle("D8", "A8"));
+        Assert.assertEquals(true,engine.validCastle("E1","A1"));
+        //Assert.assertEquals(false,engine.validCastle("E1","H1"));
     }
 
     // TODO remove

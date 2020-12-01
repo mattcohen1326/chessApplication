@@ -1,5 +1,6 @@
 package org.ooad.chess;
 
+import org.ooad.chess.gui.component.BackgroundColorComponent;
 import org.ooad.chess.logic.MoveEngine;
 import org.ooad.chess.model.*;
 
@@ -18,12 +19,17 @@ public class Main {
         //Assert.assertEquals(true,r.getMovement().movePossible("A1","A8",true,false));
         BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.WHITE);
         board = Board.filledBoard();
-        //b.getEngine().removePiece("F1");
-        //b.getEngine().removePiece("G1");
-        System.out.println(board.getPiece(new BoardPosition("G1")).getType());
-        boolean castle = engine.validCastle("E1", "H1");
+        //engine.removePiece("C8");
+        //engine.removePiece("B8");
+        //System.out.println(board.getPiece(new BoardPosition("F1")).getType());
+        //System.out.println(engine.getNeighbor("E1","right",1));
+        //engine.
+        //System.out.println(board.getPiece(new BoardPosition("H1")).getType());
+        //For some reason A1 comes up as a bishop
+        boolean castle = engine.validCastle("E1", "A1");
+        //System.out.println(board.getPiece(new BoardPosition("C1")).getType());
         System.out.println(castle);
-        System.out.println(engine.getNeighbor("E1", "left", 4));
+        //ystem.out.println(engine.getNeighbor("E1", "left", 4));
 
     }
 }

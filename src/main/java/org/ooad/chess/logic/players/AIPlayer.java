@@ -1,4 +1,4 @@
-package org.ooad.chess.logic;
+package org.ooad.chess.logic.players;
 
 import org.jetbrains.annotations.Nullable;
 import org.ooad.chess.model.*;
@@ -8,18 +8,18 @@ import java.util.Random;
 
 import static org.ooad.chess.model.ChessmanTypes.KING;
 
-public class AIPlayer {
+public class AIPlayer extends Player {
     private GameDifficulty difficulty;
     private List<BoardPiece> pieces;
     private Board board;
 
     public AIPlayer(Board board) {
         this.board = board;
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
+        for (int i = 1; i <= board.LENGTH; i++) {
+            for (int j = 1; j <= board.LENGTH; j++) {
                 BoardPosition check_pos = new BoardPosition(i, j);
                 if (this.board.hasPiece(check_pos)) {
-                    if (this.board.getPiece(check_pos).getColor() == ChessmanColor.WHITE) {
+                    if (this.board.getPiece(check_pos).getColor() == ChessmanColor.BLACK) {
                         pieces.add(this.board.getPiece(check_pos));
                     }
                 }
