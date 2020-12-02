@@ -6,18 +6,14 @@ import java.util.List;
 public class humanPlayer extends Player {
     private Board board;
     private List<BoardPiece> pieces;
-    public humanPlayer(Board b) {
-        board = b;
-        for (int i = 1; i <= board.LENGTH; i++) {
-            for (int j = 1; j <= board.LENGTH; j++) {
-                BoardPosition check_pos = new BoardPosition(i, j);
-                if (this.board.hasPiece(check_pos)) {
-                    if (this.board.getPiece(check_pos).getColor() == ChessmanColor.BLACK) {
-                        pieces.add(this.board.getPiece(check_pos));
-                    }
-                }
+
+    public humanPlayer(ChessmanColor playerColor, Board board) {
+        color = playerColor;
+
+        for (int i = 0; i < board.getPieces().length; i++) {
+            if (board.getPieces()[i].getColor() == color) {
+                pieces.add(board.getPieces()[i]);
             }
         }
     }
-
 }

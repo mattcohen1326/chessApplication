@@ -13,16 +13,12 @@ public class AIPlayer extends Player {
     private List<BoardPiece> pieces;
     private Board board;
 
-    public AIPlayer(Board board) {
-        this.board = board;
-        for (int i = 1; i <= board.LENGTH; i++) {
-            for (int j = 1; j <= board.LENGTH; j++) {
-                BoardPosition check_pos = new BoardPosition(i, j);
-                if (this.board.hasPiece(check_pos)) {
-                    if (this.board.getPiece(check_pos).getColor() == ChessmanColor.BLACK) {
-                        pieces.add(this.board.getPiece(check_pos));
-                    }
-                }
+    public AIPlayer(ChessmanColor playerColor, Board gameBoard) {
+        color = playerColor;
+        board = gameBoard;
+        for (int i = 0; i < board.getPieces().length; i++) {
+            if (board.getPieces()[i].getColor() == color) {
+                pieces.add(board.getPieces()[i]);
             }
         }
     }

@@ -5,21 +5,37 @@ import org.ooad.chess.logic.players.*;
 import static org.ooad.chess.model.ChessmanColor.WHITE;
 
 public class gameController {
-    private Board board;
-    private MoveEngine engine;
+    private final Board board;
+    private final MoveEngine engine;
     private String state;
-    private Player player1;
-    private Player player2;
+    private final Player[] players;
     private Player currentPlayer;
 
-    public gameController(){
+    public gameController(humanPlayer player, AIPlayer AI){
         board = Board.filledBoard();
         engine = new MoveEngine(board);
-        currentPlayer = player1;
+        if (player.getColor() == WHITE) {
+            currentPlayer = player;
+        }
+        else {
+            currentPlayer = AI;
+        }
+        players = new Player[]{player, AI};
         state = "start";
     }
-    //check to see if any piece is in checkMate (need to update the inCheckMate function)
-    //TODO
+
+    public gameController(humanPlayer player1, humanPlayer player2) {
+        board = Board.filledBoard();
+        engine = new MoveEngine(board);
+        if (player1.getColor() == WHITE) {
+            currentPlayer = player1;
+        }
+        else {
+            currentPlayer = player2;
+        }
+        players = new Player[]{player1, player2};
+        state = "start";
+    }
 
     boolean isInCheckmate() {
         BoardPosition[] kings = engine.getKings();
@@ -44,14 +60,19 @@ public class gameController {
         return false;
     }
 
-    private Player nextPlayer(Player p){
-        if (p == player1){
-            return player2;
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void iterateTurn() {
+        if (currentPlayer == players[0]) {
+            currentPlayer = players[1];
         }
-        else{
-            return player1;
+        else {
+            currentPlayer = players[0];
         }
     }
+
     public void playGame(){
         while(state != "finish") {
             switch (state) {
@@ -70,7 +91,8 @@ public class gameController {
                             //then make the move
                         }
                         //after turn switch the current player
-                        currentPlayer = nextPlayer(currentPlayer);
+                        iterateTurn();
+                        currentPlayer = getCurrentPlayer();
                     }
                     state = "finish";
                 }
