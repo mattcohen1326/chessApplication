@@ -1,6 +1,9 @@
 package org.ooad.chess.logic;
 import org.ooad.chess.model.*;
 import org.ooad.chess.logic.players.*;
+
+import static org.ooad.chess.model.ChessmanColor.WHITE;
+
 public class gameController {
     private Board board;
     private MoveEngine engine;
@@ -17,17 +20,30 @@ public class gameController {
     }
     //check to see if any piece is in checkMate (need to update the inCheckMate function)
     //TODO
-    private boolean gameOver(){
-        for(int i = 1; i <= board.LENGTH; i++){
-            for(int j = 1; j <= board.LENGTH; j++){
-                BoardPosition pos = new BoardPosition(i,j);
-                if(engine.singleCheckMate(pos)){
-                    return true;
-                }
+
+    boolean isInCheckmate() {
+        BoardPosition[] kings = engine.getKings();
+
+        for (int i = 0; i < board.getPieces().length; i++) {
+            BoardPiece piece = board.getPieces()[i];
+            BoardPiece king;
+            if (piece.getColor().equals(WHITE)) {
+                king = board.getPiece(kings[1]);
+            }
+            else {
+                king = board.getPiece(kings[0]);
+            }
+
+            engine.updateMoves(piece.getPosition().toString());
+            engine.updateMoves(king.getPosition().toString());
+            if (piece.getAvailableMoves().contains(king.getPosition().toString()) && king.getAvailableMoves().size() == 0) {
+                return true;
             }
         }
+
         return false;
     }
+
     private Player nextPlayer(Player p){
         if (p == player1){
             return player2;
@@ -44,7 +60,7 @@ public class gameController {
                     state = "playing";
                 }
                 case "playing" -> {
-                    while (!gameOver()) {
+                    while (!isInCheckmate()) {
                         //current player take turn.
                         if(currentPlayer instanceof AIPlayer){
                             ((AIPlayer) currentPlayer).pickMove();

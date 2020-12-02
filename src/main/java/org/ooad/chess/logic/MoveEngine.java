@@ -69,7 +69,6 @@ public class MoveEngine {
         }
 
         isInCheck(to, from);
-        isInCheckmate(to, from);
 
         if (isEliminating(from, to)) {
             if (getPiece(from).getType() == PAWN) {
@@ -287,75 +286,33 @@ public class MoveEngine {
         return false;
     }
 
-    public String[] getKings() {
-        String white = null, black = null;
-        for (int i = 1; i <= LENGTH; i++) {
-            for (int j = 1; j <= LENGTH; j++) {
-                String toTest = stringifyMove(i, j);
-                if (hasPiece(toTest)) {
-                    BoardPiece pieceCur = getPiece(toTest);
-                    if (pieceCur.getType() == KING) {
-                        if (pieceCur.getColor() == WHITE) {
-                            white = toTest;
-                        } else {
-                            black = toTest;
-                        }
-                    }
-                }
-            }
+    public BoardPosition[] getKings() {
+        BoardPosition white = null, black = null;
+        for (int i = 1; i <= board.getPieces().length; i++) {
+            BoardPiece current = board.getPieces()[i];
+           if (current.getColor().equals(WHITE) && current.getType().equals(KING)) {
+               white = current.getPosition();
+           }
+           if (current.getColor().equals(BLACK) && current.getType().equals(KING)) {
+               black = current.getPosition();
+           }
         }
 
-        return new String[]{white, black};
+        return new BoardPosition[]{white, black};
     }
 
     boolean isInCheck(String to, String from) {
-        String[] kings = getKings();
+        BoardPosition[] kings = getKings();
         int index = getIndex(from);
         BoardPiece movedPiece = getPiece(index);
 
         if (movedPiece.getColor() == WHITE) {
-            return movedPiece.getMovement().movePossible(to, kings[1], false, true);
+            return movedPiece.getMovement().movePossible(to, kings[1].toString(), false, true);
         } else {
-            return movedPiece.getMovement().movePossible(to, kings[0], false, true);
+            return movedPiece.getMovement().movePossible(to, kings[0].toString(), false, true);
         }
     }
 
-    boolean isInCheckmate(String to, String from) {
-        String[] kings = getKings();
-        int movedIndex = getIndex(from);
-        int kingIndex;
-        BoardPiece movedPiece = getPiece(movedIndex);
-        BoardPiece king;
-        String pos;
-
-        if (isInCheck(to, from)) {
-            if (movedPiece.getColor() == WHITE) {
-                kingIndex = getIndex(kings[1]);
-                pos = kings[1];
-            } else {
-                kingIndex = getIndex(kings[0]);
-                pos = kings[0];
-            }
-            king = getPiece(kingIndex);
-            updateMoves(pos);
-
-            return king.getAvailableMoves().size() == 0;
-        }
-
-        return false;
-    }
-
-    public boolean singleCheckMate(BoardPosition pos){
-        for(int i = 1; i <= board.LENGTH; i++){
-            for(int j = 1; j <= board.LENGTH; j++){
-                BoardPosition attacker = new BoardPosition(i,j);
-                if(isInCheckmate(attacker.toString(),pos.toString())){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
     // Compatability methods
     private boolean hasPiece(String location) {
         return board.hasPiece(new BoardPosition(location));
