@@ -42,6 +42,7 @@ public class gameController {
                         }
                         else{
                             //get move from human player via gui
+                            //then make the move
                         }
                         //after turn switch the current player
                         currentPlayer = nextPlayer(currentPlayer);

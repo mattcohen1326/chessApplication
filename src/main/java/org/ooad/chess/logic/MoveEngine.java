@@ -237,6 +237,26 @@ public class MoveEngine {
         return current.getColor() != movingTo.getColor();
     }
 
+    private boolean castleCheck(ArrayList<BoardPiece> enemies, int dist, String king, String rook, String dir) {
+        if (getPiece(getNeighbor(king, dir, dist)).getType() == ChessmanTypes.ROOK && getNeighbor(king,dir,dist).equals(rook)) {
+            for (int i = 1; i < dist; i++) {
+                if (getPiece(getNeighbor(king, dir, i)) != null) {
+                    return false;
+                } else {
+                    for (int j = 0; j < enemies.size(); j++) {
+                        if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, dir, i), enemies.get(j).getFirst(), true)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            return false;
+        }
+        return true;
+    }
+
     public boolean validCastle(String king, String rook) {
         if(getPiece(rook) == null || getPiece(king) == null){
             return false;
@@ -246,77 +266,25 @@ public class MoveEngine {
             return false;
         }
         //IT IS A BISHOP IT SHOULD BE A ROOK
-        System.out.println((getNeighbor(king, "left", 4)).equals(rook));
-        System.out.println(rook);
-        System.out.println(getPiece(getNeighbor(king, "left", 4)).getType());
+        boolean check1 = false;
+        boolean check2 = false;
+
         switch (color) {
             case WHITE -> {
                 ArrayList<BoardPiece> enemies = getColorPieces(BLACK);
-                if (getPiece(getNeighbor(king, "right", 3)).getType() == ChessmanTypes.ROOK && getNeighbor(king,"right",3).equals(rook)) {
-                    if (getPiece(getNeighbor(king, "right", 1)) == null && getPiece(getNeighbor(king, "right", 2)) == null) {
-                        for (int i = 1; i < 3; i++) {
-                            for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, true)) {
-
-                                    return false;
-                                }
-                            }
-                        }
-                    } else {
-                        return false;
-                    }
-                }
-                else if (getPiece(getNeighbor(king, "left", 4)).getType() == ROOK && getNeighbor(king,"left",4).equals(rook)) {
-                    if (getPiece(getNeighbor(king, "left", 1)) == null && getPiece(getNeighbor(king, "left", 2)) == null && getPiece(getNeighbor(king, "left", 3)) == null) {
-                        for (int i = 1; i < 4; i++) {
-                            for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, true)) {
-                                    System.out.println("hm");
-                                    return false;
-                                }
-                            }
-
-                        }
-                    }
-                    else {
-                        return false;
-                    }
-                }
+                check1 = castleCheck(enemies, 3, king, rook, "right");
+                check2 = castleCheck(enemies, 4, king, rook, "left");
             }
-            case BLACK -> {
-                ArrayList<BoardPiece> enemies = getColorPieces(WHITE);
-                if (getPiece(getNeighbor(king,"right",4)).getType() == ROOK && getNeighbor(king,"right",4).equals(rook)) {
-                    if (getPiece(getNeighbor(king, "right", 1)) == null && getPiece(getNeighbor(king, "right", 2)) == null && getNeighbor(king, "right", 3) == null) {
-                        for (int i = 1; i < 3; i++) {
-                            for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
-                                    return false;
-                                }
-                            }
-                        }
-                    } else {
-                        return false;
-                    }
-                } else if (getPiece(getNeighbor(king,"left",3)).getType() == ROOK && getNeighbor(king,"left",3).equals(rook)) {
-
-                    if (getPiece(getNeighbor(king, "left", 1)) == null && getPiece(getNeighbor(king, "left", 2)) == null) {
-                        for (int i = 1; i < 4; i++) {
-                            for (int j = 0; j < enemies.size(); j++) {
-                                if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, "right", i), true, false)) {
-                                    return false;
-                                }
-                            }
-
-                        }
-                    }
-                    else {
-                        return false;
-                    }
+                case BLACK -> {
+                    ArrayList<BoardPiece> enemies = getColorPieces(WHITE);
+                    check1 = castleCheck(enemies, 4, king, rook, "right");
+                    check2 = castleCheck(enemies, 3, king, rook, "left");
                 }
-            }
         }
-
-        return true;
+        if(check1 || check2){
+            return true;
+        }
+        return false;
     }
 
     public String[] getKings() {
@@ -405,7 +373,7 @@ public class MoveEngine {
         return position.getRow() * LENGTH + position.getCol();
     }
 
-    public void removePiece(String location) {
+    private void removePiece(String location) {
         board.removePiece(new BoardPosition(location));
     }
 }
