@@ -37,19 +37,19 @@ public class gameController {
         state = "start";
     }
 
-    boolean isInCheckmate() {
+    public boolean isInCheckmate() {
         BoardPosition[] kings = engine.getKings();
 
         for (int i = 0; i < board.getPieces().length; i++) {
             BoardPiece piece = board.getPieces()[i];
-            BoardPiece king;
-            if (piece.getColor().equals(WHITE)) {
-                king = board.getPiece(kings[1]);
+            BoardPiece king = null;
+            if (piece != null) {
+                if (piece.getColor().equals(WHITE)) {
+                    king = board.getPiece(kings[1]);
+                } else {
+                    king = board.getPiece(kings[0]);
+                }
             }
-            else {
-                king = board.getPiece(kings[0]);
-            }
-
             engine.updateMoves(piece.getPosition().toString());
             engine.updateMoves(king.getPosition().toString());
             if (piece.getAvailableMoves().contains(king.getPosition().toString()) && king.getAvailableMoves().size() == 0) {

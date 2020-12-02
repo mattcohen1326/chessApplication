@@ -141,7 +141,6 @@ public class MoveEngine {
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
             for (int i = 1; i < path.size() - 1; i++) {
-                //System.out.println(getPiece(path.get(i)));
                 if (getPiece(path.get(i)) != null) {
                     return true;
                 }
@@ -288,14 +287,16 @@ public class MoveEngine {
 
     public BoardPosition[] getKings() {
         BoardPosition white = null, black = null;
-        for (int i = 1; i <= board.getPieces().length; i++) {
+        for (int i = 0; i < board.getPieces().length; i++) {
             BoardPiece current = board.getPieces()[i];
-           if (current.getColor().equals(WHITE) && current.getType().equals(KING)) {
-               white = current.getPosition();
-           }
-           if (current.getColor().equals(BLACK) && current.getType().equals(KING)) {
-               black = current.getPosition();
-           }
+            if (current != null) {
+                if (current.getColor().equals(WHITE) && current.getType().equals(KING)) {
+                    white = current.getPosition();
+                }
+                if (current.getColor().equals(BLACK) && current.getType().equals(KING)) {
+                    black = current.getPosition();
+                }
+            }
         }
 
         return new BoardPosition[]{white, black};
@@ -304,7 +305,7 @@ public class MoveEngine {
     boolean isInCheck(String to, String from) {
         BoardPosition[] kings = getKings();
         int index = getIndex(from);
-        BoardPiece movedPiece = getPiece(index);
+        BoardPiece movedPiece = board.getPieces()[index];
 
         if (movedPiece.getColor() == WHITE) {
             return movedPiece.getMovement().movePossible(to, kings[1].toString(), false, true);
