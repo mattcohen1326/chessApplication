@@ -38,6 +38,15 @@ public class MoveEngine {
                             availableMoves.add(stringifyMove(i, j));
                         }
                     }
+                    else if (piece.getType().equals(KING)) {
+                        String tmp = piece.getPosition().toString();
+                        setPiece(stringifyMove(i, j), piece);
+                        if (isInCheck() == null) {
+                            System.out.printf("%s\n", stringifyMove(i,j));
+                            availableMoves.add(stringifyMove(i,j));
+                        }
+                        setPiece(tmp, piece);
+                    }
                     else{
                         availableMoves.add(stringifyMove(i, j));
                     }
@@ -78,8 +87,6 @@ public class MoveEngine {
         if (isBlocked(path)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
-
-        isInCheck(to, from);
 
         if (isEliminating(from, to)) {
             if (getPiece(from).getType() == PAWN) {
@@ -320,16 +327,25 @@ public class MoveEngine {
     public void testHelp(String loc){
         removePiece(loc);
     }
-    boolean isInCheck(String to, String from) {
+    public ChessmanColor isInCheck() {
         BoardPosition[] kings = getKings();
-        int index = getIndex(from);
-        BoardPiece movedPiece = board.getPieces()[index];
 
-        if (movedPiece.getColor() == WHITE) {
-            return movedPiece.getMovement().movePossible(to, kings[1].toString(), false, true);
-        } else {
-            return movedPiece.getMovement().movePossible(to, kings[0].toString(), false, true);
+        for (int i = 0; i < board.getPieces().length; i++) {
+            BoardPiece piece = board.getPieces()[i];
+            BoardPiece king = null;
+            if (piece != null) {
+                if (piece.getColor().equals(WHITE)) {
+                    king = board.getPiece(kings[1]);
+                } else {
+                    king = board.getPiece(kings[0]);
+                }
+                if (piece.getMovement().movePossible(piece.getPosition().toString(), king.getPosition().toString(), false, true)) {
+                    return king.getColor();
+                }
+            }
         }
+
+        return null;
     }
 
     // Compatability methods

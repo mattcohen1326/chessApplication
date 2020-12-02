@@ -37,27 +37,24 @@ public class gameController {
         state = "start";
     }
 
-    public boolean isInCheckmate() {
+    public ChessmanColor isInCheckmate() {
+        ChessmanColor kingColor = engine.isInCheck();
+        BoardPiece king;
         BoardPosition[] kings = engine.getKings();
-
-        for (int i = 0; i < board.getPieces().length; i++) {
-            BoardPiece piece = board.getPieces()[i];
-            BoardPiece king = null;
-            if (piece != null) {
-                if (piece.getColor().equals(WHITE)) {
-                    king = board.getPiece(kings[1]);
-                } else {
-                    king = board.getPiece(kings[0]);
-                }
+        if (kingColor != null) {
+            if (kingColor == WHITE) {
+                king = board.getPiece(kings[0]);
             }
-            engine.updateMoves(piece.getPosition().toString());
-            engine.updateMoves(king.getPosition().toString());
-            if (piece.getAvailableMoves().contains(king.getPosition().toString()) && king.getAvailableMoves().size() == 0) {
-                return true;
+            else {
+                king = board.getPiece(kings[1]);
+            }
+
+            if (king.getAvailableMoves().size() == 0) {
+                return king.getColor();
             }
         }
 
-        return false;
+        return null;
     }
 
     public Player getCurrentPlayer() {
@@ -81,7 +78,7 @@ public class gameController {
                     state = "playing";
                 }
                 case "playing" -> {
-                    while (!isInCheckmate()) {
+                    while (isInCheckmate() == null) {
                         //current player take turn.
                         if(currentPlayer instanceof AIPlayer){
                             ((AIPlayer) currentPlayer).pickMove();
