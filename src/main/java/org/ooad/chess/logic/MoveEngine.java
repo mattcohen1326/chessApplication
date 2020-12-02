@@ -345,6 +345,17 @@ public class MoveEngine {
         return false;
     }
 
+    public boolean singleCheckMate(BoardPosition pos){
+        for(int i = 1; i <= board.LENGTH; i++){
+            for(int j = 1; j <= board.LENGTH; j++){
+                BoardPosition attacker = new BoardPosition(i,j);
+                if(isInCheckmate(attacker.toString(),pos.toString())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     // Compatability methods
     private boolean hasPiece(String location) {
         return board.hasPiece(new BoardPosition(location));

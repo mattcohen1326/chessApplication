@@ -8,6 +8,7 @@ public class gameController {
     private Player player1;
     private Player player2;
     private Player currentPlayer;
+
     public gameController(){
         board = Board.filledBoard();
         engine = new MoveEngine(board);
@@ -17,6 +18,14 @@ public class gameController {
     //check to see if any piece is in checkMate (need to update the inCheckMate function)
     //TODO
     private boolean gameOver(){
+        for(int i = 1; i <= board.LENGTH; i++){
+            for(int j = 1; j <= board.LENGTH; j++){
+                BoardPosition pos = new BoardPosition(i,j);
+                if(engine.singleCheckMate(pos)){
+                    return true;
+                }
+            }
+        }
         return false;
     }
     private Player nextPlayer(Player p){
