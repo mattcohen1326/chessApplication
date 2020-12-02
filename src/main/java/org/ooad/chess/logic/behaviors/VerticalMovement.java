@@ -24,7 +24,7 @@ public class VerticalMovement implements MoveStrategy {
 
         List<String> path = new ArrayList<>();
 
-        for (int i = 0; i < pos; i++) {
+        for (int i = 0; i <= pos; i++) {
             path.add(String.format("%s%s", pre.charAt(0), index + (i * add)));
         }
 

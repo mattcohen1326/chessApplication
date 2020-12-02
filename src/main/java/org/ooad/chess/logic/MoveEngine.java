@@ -28,8 +28,19 @@ public class MoveEngine {
             for (int j = 1; j <= LENGTH; j++) {
                 boolean blocked = isBlocked(piece.getMovement().movePath(position, stringifyMove(i, j)));
                 if (!blocked && piece.getMovement().movePossible(position, stringifyMove(i, j), piece.getFirst(), isEliminating(position, stringifyMove(i, j)))) {
-                    //1.out.printf("%s%n", stringifyMove(i,j));
-                    availableMoves.add(stringifyMove(i, j));
+
+                    if (piece.getType() == PAWN){
+                        //System.out.println((int)piece.getPosition().toString().charAt(0)-63);
+                        if(i < ((int)piece.getPosition().toString().charAt(0)-63)){
+                            continue;
+                        }
+                        else{
+                            availableMoves.add(stringifyMove(i, j));
+                        }
+                    }
+                    else{
+                        availableMoves.add(stringifyMove(i, j));
+                    }
                 }
             }
         }
@@ -138,11 +149,15 @@ public class MoveEngine {
 
     public boolean isBlocked(List<String> path) {
         BoardPiece current = getPiece(path.get(0));
+        if(current == null){
+            return true;
+        }
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
+            //System.out.println(path);
             for (int i = 1; i < path.size() - 1; i++) {
-                //System.out.println(getPiece(path.get(i)));
                 if (getPiece(path.get(i)) != null) {
+                    //System.out.println(getPiece(path.get(i)).getType());
                     return true;
                 }
             }
@@ -225,7 +240,7 @@ public class MoveEngine {
             return false;
         } else {
             if (current.getType() == PAWN) {
-                if (row_diff == 1 && col_diff == 1) {
+                if (row_diff == 1 && col_diff == 1 && getPiece(post).getColor() != getPiece(pre).getColor()) {
                     return true;
                 } else {
                     return false;
@@ -300,7 +315,9 @@ public class MoveEngine {
 
         return new BoardPosition[]{white, black};
     }
-
+    public void testHelp(String loc){
+        removePiece(loc);
+    }
     boolean isInCheck(String to, String from) {
         BoardPosition[] kings = getKings();
         int index = getIndex(from);

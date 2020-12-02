@@ -80,26 +80,7 @@ public class BoardPiece {
         this.availableMoves.addAll(availableMoves);
     }
 
-    // Assumes that the White pieces will be at the top of the board and the black pieces will be at the bottom (1,1)
-    /*public void updateMoves(String position, MoveEngine engine) {
 
-        for (int i = 1; i <= engine.getBoard().LENGTH; i++) {
-            for (int j = 1; j <= engine.getBoard().LENGTH; j++) {
-                boolean blocked = engine.isBlocked(movement.movePath(position,stringifyMove(i,j)));
-                if(!blocked && movement.movePossible(position,stringifyMove(i,j),first_move,engine.isEliminating(position,stringifyMove(i,j)))){
-                    available_moves.add(stringifyMove(i,j));
-                }
-            }
-        }
-    }
-
-    private String stringifyMove(int row, int col) {
-        StringBuilder str = new StringBuilder();
-        str.append((char) (col + 64));
-        str.append(row);
-        String check_pos = str.toString();
-        return check_pos;
-    }*/
 }
 
 
