@@ -4,7 +4,6 @@ import org.ooad.chess.model.*;
 import java.util.List;
 
 public class humanPlayer extends Player {
-    private Board board;
     private List<BoardPiece> pieces;
 
     public humanPlayer(ChessmanColor playerColor, Board board) {

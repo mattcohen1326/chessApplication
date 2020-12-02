@@ -4,6 +4,9 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.ooad.chess.logic.players.AIPlayer;
+import org.ooad.chess.logic.players.Player;
+import org.ooad.chess.logic.players.humanPlayer;
 import org.ooad.chess.model.*;
 
 public class EngineTest {
@@ -201,5 +204,43 @@ public class EngineTest {
 
     private @Nullable BoardPiece getPiece(String location) {
         return board.getPiece(new BoardPosition(location));
+    }
+
+    @Test
+    public void checkCheckMethod() {
+        board = new Board();
+        engine = new MoveEngine(board);
+
+        BoardPiece king1 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.WHITE);
+        BoardPiece king2 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.BLACK);
+        BoardPiece bishop = new BoardPiece(ChessmanTypes.BISHOP, ChessmanColor.BLACK);
+
+        setPiece("A3", king1);
+        setPiece("A8", king2);
+        setPiece("D4", bishop);
+
+        Assert.assertTrue(engine.isInCheck("C5", "D4"));
+        Assert.assertFalse(engine.isInCheck("E3", "D4"));
+    }
+
+    @Test
+    public void checkMateTest() {
+        board = new Board();
+        engine = new MoveEngine(board);
+        AIPlayer a = null;
+        humanPlayer b = null;
+        gameController controller = new gameController(b, a);
+
+        BoardPiece king1 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.WHITE);
+        BoardPiece king2 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.BLACK);
+        BoardPiece rook1 = new BoardPiece(ChessmanTypes.ROOK, ChessmanColor.BLACK);
+        BoardPiece rook2 = new BoardPiece(ChessmanTypes.ROOK, ChessmanColor.BLACK);
+
+        setPiece("A1", king1);
+        setPiece("A8", king2);
+        setPiece("A3", rook1);
+        setPiece("B3", rook2);
+
+        Assert.assertTrue(controller.isInCheckmate());
     }
 }
