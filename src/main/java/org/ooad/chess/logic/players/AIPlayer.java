@@ -3,6 +3,7 @@ package org.ooad.chess.logic.players;
 import org.jetbrains.annotations.Nullable;
 import org.ooad.chess.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -16,8 +17,12 @@ public class AIPlayer extends Player {
     public AIPlayer(ChessmanColor playerColor, Board gameBoard) {
         color = playerColor;
         board = gameBoard;
+        pieces = new ArrayList<BoardPiece>();
         for (int i = 0; i < board.getPieces().length; i++) {
-            if (board.getPieces()[i].getColor() == color) {
+            if (board.getPieces()[i] == null){
+                continue;
+            }
+            else if (board.getPieces()[i].getColor() == color) {
                 pieces.add(board.getPieces()[i]);
             }
         }

@@ -2,6 +2,7 @@ package org.ooad.chess;
 
 import org.ooad.chess.gui.component.BackgroundColorComponent;
 import org.ooad.chess.logic.MoveEngine;
+import org.ooad.chess.logic.players.AIPlayer;
 import org.ooad.chess.model.*;
 
 public class Main {
@@ -19,6 +20,6 @@ public class Main {
         engine.updateMoves("A2");
         //System.out.println(board.getPieces()[48].getType());
         System.out.println(board.getPieces()[8].getAvailableMoves().get(0).toString().equals("A3") );
-
+        AIPlayer p = new AIPlayer(ChessmanColor.BLACK,board);
     }
 }

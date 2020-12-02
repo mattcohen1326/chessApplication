@@ -225,10 +225,10 @@ public class EngineTest {
 
     @Test
     public void checkMateTest() {
-        board = new Board();
+        board = Board.filledBoard();
         engine = new MoveEngine(board);
-        AIPlayer a = null;
-        humanPlayer b = null;
+        AIPlayer a = new AIPlayer(ChessmanColor.BLACK,board);
+        humanPlayer b = new humanPlayer(ChessmanColor.WHITE,board);
         gameController controller = new gameController(b, a);
 
         BoardPiece king1 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.WHITE);
