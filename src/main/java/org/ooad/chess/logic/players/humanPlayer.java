@@ -7,17 +7,22 @@ import java.util.List;
 
 public class humanPlayer extends Player {
     private List<BoardPiece> pieces;
-
-    public humanPlayer(ChessmanColor playerColor, Board board) {
+    private Board board;
+    public humanPlayer(ChessmanColor playerColor, Board b) {
         color = playerColor;
         pieces = new ArrayList<BoardPiece>();
+        board = b;
+    }
+    public void updatePieces(Board b){
+        board = b;
         for (int i = 0; i < board.getPieces().length; i++) {
-            if(board.getPieces()[i] == null){
+            if (board.getPieces()[i] == null){
                 continue;
             }
-            if (board.getPieces()[i].getColor() == color) {
+            else if (board.getPieces()[i].getColor() == color) {
                 pieces.add(board.getPieces()[i]);
             }
         }
     }
+
 }

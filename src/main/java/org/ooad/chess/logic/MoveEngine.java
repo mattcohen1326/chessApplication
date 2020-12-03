@@ -22,7 +22,11 @@ public class MoveEngine {
 
     public void updateMoves(String position) {
         BoardPiece piece = getPiece(position);
-        List<String> availableMoves = new ArrayList<>();
+        System.out.println(piece.getPosition().toString());
+        if(piece == null){
+            return;
+        }
+        List<String> availableMoves = new ArrayList<String>();
 
         for (int i = 1; i <= LENGTH; i++) {
             for (int j = 1; j <= LENGTH; j++) {
@@ -31,31 +35,48 @@ public class MoveEngine {
 
                     if (piece.getType() == PAWN){
                         //System.out.println((int)piece.getPosition().toString().charAt(0)-63);
-                        if(i < ((int)piece.getPosition().toString().charAt(0)-63)){
-                            continue;
+                        //TODO MAKE THIS SPECIFIC TO COLOR
+                        switch(piece.getColor()){
+                            case WHITE -> {
+                                if(i < ((int)piece.getPosition().toString().charAt(1))){
+                                    continue;
+                                }
+                                else{
+                                    //System.out.println(stringifyMove(i,j));
+                                    availableMoves.add(stringifyMove(i,j));
+                                }
+                            }
+                            case BLACK -> {
+                                if(i > ((int)piece.getPosition().toString().charAt(1))){
+                                    continue;
+                                }
+                                else{
+                                    //System.out.println(stringifyMove(i,j));
+                                    availableMoves.add(stringifyMove(i,j));
+                                }
+                            }
+
                         }
-                        else{
-                            availableMoves.add(stringifyMove(i, j));
-                        }
+
                     }
                     else if (piece.getType().equals(KING)) {
                         String tmp = piece.getPosition().toString();
                         setPiece(stringifyMove(i, j), piece);
                         if (isInCheck() == null) {
-                            System.out.printf("%s\n", stringifyMove(i,j));
                             availableMoves.add(stringifyMove(i,j));
                         }
                         setPiece(tmp, piece);
                     }
                     else{
-                        availableMoves.add(stringifyMove(i, j));
+                        //System.out.println(stringifyMove(i,j));
+                        availableMoves.add(stringifyMove(i,j));
                     }
                 }
             }
         }
-
         piece.setAvailableMoves(availableMoves.stream().map(BoardPosition::new).collect(Collectors.toList()));
-    }
+
+      }
 
     /**
      * Moves a chess piece from a location to a destination.
@@ -324,9 +345,7 @@ public class MoveEngine {
 
         return new BoardPosition[]{white, black};
     }
-    public void testHelp(String loc){
-        removePiece(loc);
-    }
+
     public ChessmanColor isInCheck() {
         BoardPosition[] kings = getKings();
 

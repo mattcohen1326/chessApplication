@@ -36,6 +36,27 @@ public class gameController {
         players = new Player[]{player1, player2};
         state = "start";
     }
+    public void testHelp(){
+        updateAllMoves();
+        if(players[1] instanceof AIPlayer){
+            System.out.println(((AIPlayer) players[1]).pickMove());
+        }
+    }
+    private void updateAllMoves(){
+        for(int i = 0; i < board.LENGTH; i++){
+            for(int j = 0; j < board.LENGTH; j++){
+                if(board.getPiece(new BoardPosition(i,j)) == null){
+                    continue;
+                }
+                engine.updateMoves(new BoardPosition(i,j).toString());
+                if(currentPlayer.getColor() == board.getPiece(new BoardPosition(i,j)).getColor() && board.getPiece(new BoardPosition(i,j)).getEnp()){
+                    board.getPiece(new BoardPosition(i,j)).setEnp(false);
+                }
+            }
+        }
+        players[1].updatePieces(board);
+
+    }
 
     public ChessmanColor isInCheckmate() {
         ChessmanColor kingColor = engine.isInCheck();
@@ -60,8 +81,9 @@ public class gameController {
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
-
     public void iterateTurn() {
+
+        updateAllMoves();
         if (currentPlayer == players[0]) {
             currentPlayer = players[1];
         }
@@ -85,8 +107,8 @@ public class gameController {
                         }
                         else{
                             //get move from human player via gui
-                            //then make the move
                         }
+
                         //after turn switch the current player
                         iterateTurn();
                         currentPlayer = getCurrentPlayer();

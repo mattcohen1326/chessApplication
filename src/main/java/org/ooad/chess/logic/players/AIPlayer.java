@@ -14,22 +14,21 @@ public class AIPlayer extends Player {
     private List<BoardPiece> pieces;
     private Board board;
 
+
     public AIPlayer(ChessmanColor playerColor, Board gameBoard) {
         color = playerColor;
         board = gameBoard;
         pieces = new ArrayList<BoardPiece>();
-        for (int i = 0; i < board.getPieces().length; i++) {
-            if (board.getPieces()[i] == null){
-                continue;
-            }
-            else if (board.getPieces()[i].getColor() == color) {
-                pieces.add(board.getPieces()[i]);
-            }
-        }
+        updatePieces(board);
     }
-
+    public List<BoardPiece> getPieces(){
+        return pieces;
+    }
     //following these values https://en.wikipedia.org/wiki/Chess_piece_relative_value
     private int cost(BoardPosition pos) {
+        if(board.getPiece(pos) == null){
+            return 0;
+        }
         switch (board.getPiece(pos).getType()) {
             case QUEEN -> {
                 return 9;
@@ -59,15 +58,17 @@ public class AIPlayer extends Player {
     private BoardPosition pickMediumMove() {
         //Idea: set values to capturing each piece, go through available moves, pick highest score.
         int totalPieces = pieces.size();
+        System.out.println(totalPieces);
         int[] scores = new int[totalPieces];
         BoardPosition[] places = new BoardPosition[totalPieces];
         //for each peace
         for (int i = 0; i < totalPieces; i++) {
             List<BoardPosition> moves = pieces.get(i).getAvailableMoves();
+            System.out.println(i);
             int max = 0;
             BoardPosition best = null;
             for (BoardPosition move : moves) {
-                if (board.getPiece(move).getType() == KING) {
+                if (board.getPiece(move) != null && board.getPiece(move).getType() == KING) {
                     return move;
                 }
                 if (cost(move) > max) {
@@ -98,4 +99,22 @@ public class AIPlayer extends Player {
         int randomMove = rand.nextInt(movesSize);
         return pieces.get(randomPiece).getAvailableMoves().get(randomMove);
     }
+
+    public void setDifficulty(GameDifficulty dif){
+        difficulty = dif;
+        return;
+    }
+    public void updatePieces(Board b){
+        board = b;
+        pieces = new ArrayList<BoardPiece>();
+        for (int i = 0; i < board.getPieces().length; i++) {
+            if (board.getPieces()[i] == null){
+                continue;
+            }
+            else if (board.getPieces()[i].getColor() == color) {
+                pieces.add(board.getPieces()[i]);
+            }
+        }
+    }
+
 }
