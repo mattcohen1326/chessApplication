@@ -59,9 +59,16 @@ public class AIPlayer extends Player implements AutoPlayer {
         for (int i = 0; i < totalPieces; i++) {
             BoardPiece sourcePiece = pieces.get(i);
             List<BoardPosition> moves = sourcePiece.getAvailableMoves();
-            int max = 0;
+            int max = -1;
             BoardPosition best = null;
             for (BoardPosition move : moves) {
+                if(board.getPiece(move) == null){
+                    if (0 > max){
+                        max = 0;
+                        best = move;
+                    }
+                    continue;
+                }
                 if (board.getPiece(move).getType() == KING) {
                     return new BoardMove(sourcePiece.getPosition(), move);
                 }
@@ -81,6 +88,7 @@ public class AIPlayer extends Player implements AutoPlayer {
                 max_ind = i;
             }
         }
+
         return places[max_ind];
     }
 

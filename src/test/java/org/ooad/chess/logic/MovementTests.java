@@ -21,7 +21,8 @@ import static org.ooad.chess.model.ChessmanTypes.*;
 import static org.ooad.chess.model.GameDifficulty.EASY;
 import static org.ooad.chess.util.TestUtils.pos;
 
-public class MovementTests {
+public class
+MovementTests {
 
     private Board board;
     private MoveEngine engine;

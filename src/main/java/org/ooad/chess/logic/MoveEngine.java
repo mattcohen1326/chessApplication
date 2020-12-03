@@ -379,12 +379,10 @@ public class MoveEngine {
 
     public boolean validCastle(String king, String rook) {
         if(getPiece(rook) == null || getPiece(king) == null){
-            System.out.println(1);
             return false;
         }
         ChessmanColor color = getPiece(king).getColor();
         if (!getPiece(king).getFirst() || !getPiece(rook).getFirst()) {
-            System.out.println(2);
             return false;
         }
         //IT IS A BISHOP IT SHOULD BE A ROOK

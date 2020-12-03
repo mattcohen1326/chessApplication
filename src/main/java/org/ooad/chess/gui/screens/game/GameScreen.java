@@ -13,6 +13,7 @@ import org.ooad.chess.model.player.Player;
 import static org.ooad.chess.model.ChessmanColor.BLACK;
 import static org.ooad.chess.model.ChessmanColor.WHITE;
 import static org.ooad.chess.model.GameDifficulty.EASY;
+import static org.ooad.chess.model.GameDifficulty.MEDIUM;
 
 public class GameScreen extends Component {
 
@@ -20,7 +21,7 @@ public class GameScreen extends Component {
     public void init(GLAutoDrawable gl) {
         Player player = new HumanPlayer(WHITE);
 //        Player player2 = new HumanPlayer(BLACK);
-        Player player2 = new AIPlayer(BLACK, EASY);
+        Player player2 = new AIPlayer(BLACK, MEDIUM);
 
         GameController controller = new GameControllerImpl(player, player2);
         addChild(new PaddedComponent(new FixedAspectComponent(1, new GameBoard(controller)), 0.05));
