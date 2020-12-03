@@ -13,9 +13,7 @@ public class HorizontalMovement implements MoveStrategy {
     public List<String> movePath(String pre, String post) {
         int pos = Math.abs(pre.charAt(1) - post.charAt(1));
         int pos2 = Math.abs(pre.charAt(0)-post.charAt(0));
-        //System.out.println(pos2);
         int add;
-        //System.out.println(pos);
         if (pre.charAt(0) < post.charAt(0)) {
             add = 1;
         } else {

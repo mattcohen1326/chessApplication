@@ -54,16 +54,19 @@ public class GameControllerImpl implements GameController {
 
     @Override
     public boolean makeMove(BoardMove boardMove) {
+        System.out.println("Before FEN: " + board.toFen());
         System.out.println("Make move: " + currentPlayer.getColor() + " " + boardMove);
         BoardPiece sourcePiece = board.getPiece(boardMove.getFrom());
         if (sourcePiece != null && sourcePiece.getColor() == currentPlayer.getColor()) {
             engine.updateMoves(sourcePiece);
             if (sourcePiece.getAvailableMoves().contains(boardMove.getTo())) {
                 engine.movePiece(boardMove.getFrom().toString(), boardMove.getTo().toString());
+                System.out.println("After FEN: " + board.toFen());
                 nextPlayer();
                 return true;
             }
         }
+        System.out.println("After FEN: " + board.toFen());
         return false;
     }
 
