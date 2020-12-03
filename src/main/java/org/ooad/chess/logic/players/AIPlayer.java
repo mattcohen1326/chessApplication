@@ -58,14 +58,14 @@ public class AIPlayer extends Player {
     private BoardPosition pickMediumMove() {
         //Idea: set values to capturing each piece, go through available moves, pick highest score.
         int totalPieces = pieces.size();
-        System.out.println(totalPieces);
+        //System.out.println(totalPieces);
         int[] scores = new int[totalPieces];
         BoardPosition[] places = new BoardPosition[totalPieces];
         //for each peace
         for (int i = 0; i < totalPieces; i++) {
             List<BoardPosition> moves = pieces.get(i).getAvailableMoves();
-            System.out.println(i);
-            int max = 0;
+            System.out.println(moves);
+            int max = -1;
             BoardPosition best = null;
             for (BoardPosition move : moves) {
                 if (board.getPiece(move) != null && board.getPiece(move).getType() == KING) {

@@ -22,7 +22,7 @@ public class MoveEngine {
 
     public void updateMoves(String position) {
         BoardPiece piece = getPiece(position);
-        System.out.println(piece.getPosition().toString());
+        //System.out.println(piece.getPosition().toString());
         if(piece == null){
             return;
         }
@@ -38,16 +38,20 @@ public class MoveEngine {
                         //TODO MAKE THIS SPECIFIC TO COLOR
                         switch(piece.getColor()){
                             case WHITE -> {
-                                if(i < ((int)piece.getPosition().toString().charAt(1))){
+                                //System.out.println(i);
+                                //System.out.println(((int)piece.getPosition().toString().charAt(1))-48);
+                                if(i < ((int)piece.getPosition().toString().charAt(1))-48 ){
                                     continue;
                                 }
                                 else{
                                     //System.out.println(stringifyMove(i,j));
+                                    //System.out.println(i);
                                     availableMoves.add(stringifyMove(i,j));
                                 }
                             }
                             case BLACK -> {
-                                if(i > ((int)piece.getPosition().toString().charAt(1))){
+
+                                if(i > ((int)piece.getPosition().toString().charAt(1))-48){
                                     continue;
                                 }
                                 else{

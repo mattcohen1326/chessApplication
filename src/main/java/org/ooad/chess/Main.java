@@ -25,6 +25,8 @@ public static void main(String[] args) {
         humanPlayer human = new humanPlayer(ChessmanColor.WHITE,board);
         gameController controller = new gameController(human,p);
         controller.testHelp();
+        //engine.updateMoves("A7");
+        //System.out.println(board.getPiece(new BoardPosition("A7")).getAvailableMoves());
         //System.out.println(p.getPieces().get(1).getAvailableMoves());
     }
 }
