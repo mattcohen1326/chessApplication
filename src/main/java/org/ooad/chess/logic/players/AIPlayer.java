@@ -10,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 import static org.ooad.chess.model.ChessmanTypes.KING;
+import static org.ooad.chess.model.ChessmanTypes.PAWN;
 
 public class AIPlayer extends Player implements AutoPlayer {
 
@@ -77,8 +78,11 @@ public class AIPlayer extends Player implements AutoPlayer {
                     best = move;
                 }
             }
-            places[i] = new BoardMove(sourcePiece.getPosition(), best);
-            scores[i] = max;
+            if(best!=null){
+                places[i] = new BoardMove(sourcePiece.getPosition(), best);
+                scores[i] = max;
+            }
+
         }
         int max_ind = 0;
         int high_score = 0;
@@ -88,7 +92,9 @@ public class AIPlayer extends Player implements AutoPlayer {
                 max_ind = i;
             }
         }
-
+        if(places[max_ind]==null){
+            System.out.println(max_ind);
+        }
         return places[max_ind];
     }
 
