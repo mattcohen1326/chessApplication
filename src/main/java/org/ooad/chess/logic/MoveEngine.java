@@ -68,6 +68,7 @@ public class MoveEngine {
 
                     }
                     else if (piece.getType().equals(KING)) {
+                        System.out.printf("%s\n", stringifyMove(i,j));
                         if (!movesToCheck(stringifyMove(i,j), piece.getColor())) {
                             availableMoves.add(stringifyMove(i,j));
                         }
@@ -491,6 +492,15 @@ public class MoveEngine {
                             }
                             else {
                                 return true;
+                            }
+                        }
+                        else {
+                            if (getPiece(to) != null && getPiece(to) != piece) {
+                                String toRemove = path.get(path.size()-1);
+                                path.remove(toRemove);
+                                if (!isBlocked(path)) {
+                                    return true;
+                                }
                             }
                         }
                     }
