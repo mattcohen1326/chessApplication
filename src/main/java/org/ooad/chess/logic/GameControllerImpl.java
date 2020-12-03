@@ -43,7 +43,7 @@ public class GameControllerImpl implements GameController {
     }
 
     public boolean isInCheckmate(Player player) {
-        return engine.isInCheck() == player.getColor();
+        return engine.isInCheckmate() == player.getColor();
     }
 
     @Override

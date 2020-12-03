@@ -1,6 +1,6 @@
 package org.ooad.chess.logic;
 
-import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.ooad.chess.logic.players.AIPlayer;
@@ -15,8 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.ooad.chess.model.Board.LENGTH;
 import static org.ooad.chess.model.ChessmanColor.BLACK;
 import static org.ooad.chess.model.ChessmanColor.WHITE;
@@ -184,6 +183,7 @@ public class MovementTests {
         board = Board.filledBoard();
         engine = new MoveEngine(board);
 
+
         board.setPiece(pos("E7"), new BoardPiece(QUEEN, WHITE));
 
         BoardPiece blackKing = board.getKing(BLACK);
@@ -192,7 +192,35 @@ public class MovementTests {
         Set<BoardPosition> actualMoves = new HashSet<>(blackKing.getAvailableMoves());
         Set<BoardPosition> expectedMoves = Set.of(new BoardPosition("E7"));
         assertEquals(expectedMoves, actualMoves);
-        board.setPiece(pos("E7"), blackKing);
-        assertNull(engine.isInCheck());
+        assertEquals(BLACK, engine.isInCheck());
+        assertNull(engine.isInCheckmate());
+    }
+
+    @Test
+    public void reversePawnBlock() {
+        BoardPiece whiteKing = new BoardPiece(KING, WHITE);
+        board.setPiece(pos("C4"), whiteKing);
+        board.setPiece(pos("A3"), new BoardPiece(PAWN, BLACK));
+        engine.updateMoves(whiteKing);
+
+        assertTrue(whiteKing.getAvailableMoves().contains(pos("B4")));
+    }
+
+    @Test
+    public void exposeKingCheck() {
+        board.setPiece(pos("A1"), new BoardPiece(KING, WHITE));
+        BoardPiece whiteRook = new BoardPiece(ROOK, WHITE);
+        board.setPiece(pos("B1"), whiteRook);
+        board.setPiece(pos("C1"), new BoardPiece(QUEEN, BLACK));
+
+        engine.updateMoves(whiteRook);
+
+        Set<BoardPosition> expected = Set.of(pos("C1"));
+        assertEquals(expected, new HashSet<>(whiteRook.getAvailableMoves()));
+    }
+
+    @After
+    public void after() {
+        board.print();
     }
 }

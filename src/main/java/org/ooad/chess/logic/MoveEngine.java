@@ -90,13 +90,6 @@ public class MoveEngine {
 
       }
 
-    /**
-     * Moves a chess piece from a location to a destination.
-     *
-     * @param from The source location.
-     * @param to   The destination.
-     * @throws IllegalStateException if the source location is empty or the destination is full, if the move is invalid given the type, or if the move is blocked by another piece.
-     */
     private void executeCatle(String king, String rook){
         if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
             if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){
@@ -399,6 +392,18 @@ public class MoveEngine {
         }
 
         return new BoardPosition[]{white, black};
+    }
+
+    public @Nullable ChessmanColor isInCheckmate() {
+        for (ChessmanColor color : ChessmanColor.values()) {
+            if (isInCheck() == color) {
+                BoardPiece king = board.getKing(color);
+                if (king.getAvailableMoves().isEmpty()) {
+                    return color;
+                }
+            }
+        }
+        return null;
     }
 
     public ChessmanColor isInCheck() {
