@@ -1,5 +1,6 @@
 package org.ooad.chess;
 
+import org.junit.Assert;
 import org.ooad.chess.logic.MoveEngine;
 import org.ooad.chess.logic.players.AIPlayer;
 import org.ooad.chess.model.*;
@@ -20,13 +21,9 @@ public class Main {
         Board board = Board.filledBoard();
         MoveEngine engine = new MoveEngine(board);
         //engine.testHelp("D2");//System.out.println(board.getPiece(new BoardPosition("A1")).getType());
-        board.setPiece(new BoardPosition("A1"), new BoardPiece(KING, WHITE));
-        BoardPiece whiteRook = new BoardPiece(ROOK, WHITE);
-        board.setPiece(new BoardPosition("B1"), whiteRook);
-        board.setPiece(new BoardPosition("C1"), new BoardPiece(QUEEN, BLACK));
 
-        engine.updateMoves(whiteRook);
-        System.out.println(board.getPieces()[1].getAvailableMoves());
+        engine.movePiece("A2","A4");
+        System.out.println(board.getPiece(new BoardPosition("A4")).getFirst());
         //System.out.println(board.getPiece(new BoardPosition("E8")).getType());
     }
 }

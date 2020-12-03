@@ -90,42 +90,9 @@ public class MoveEngine {
 
       }
 
-    private void executeCatle(String king, String rook){
-        if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
-            if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){
-                setPiece("F8",getPiece(rook));
-                getPiece(rook).setFirstMove(false);
-                removePiece(rook);
-                setPiece("G8",getPiece(king));
-            }
-            else{
-                setPiece("D8",getPiece(rook));
-                getPiece(rook).setFirstMove(false);
-                removePiece(rook);
-                setPiece("C8",getPiece(king));
-            }
-            getPiece(king).setFirstMove(false);
-            removePiece(king);
-        }
-        else if(getPiece(king).getPosition().equals(new BoardPosition("E1"))){
-            if(getPiece(rook).getPosition().equals(new BoardPosition("H1"))){
-                setPiece("F1",getPiece(rook));
-                getPiece(rook).setFirstMove(false);
-                removePiece(rook);
-                setPiece("G1",getPiece(king));
-            }
-            else{
-                setPiece("D1",getPiece(rook));
-                getPiece(rook).setFirstMove(false);
-                removePiece(rook);
-                setPiece("C1",getPiece(king));
-            }
-            getPiece(king).setFirstMove(false);
-            removePiece(king);
 
 
-        }
-    }
+
     public void movePiece(String from, String to) {
         /*if (hasPiece(to)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is not empty", from, to, to));
@@ -136,6 +103,7 @@ public class MoveEngine {
         if(getPiece(from) != null && getPiece(to) != null && getPiece(from).getType() == ROOK && getPiece(to).getType() == KING && getPiece(from).getColor() == getPiece(to).getColor()){
             if(validCastle(to,from)){
                 executeCatle(to,from);
+                updateEnpassant(new BoardPosition(from));
                 return;
             }
         }
@@ -189,10 +157,55 @@ public class MoveEngine {
         setPiece(to, board.getPiece(fromPosition));
         getPiece(from).setFirstMove(false);
         removePiece(from);
+        updateEnpassant(new BoardPosition(to));
+
     }
 
-    public void testHelp(String rem){
-        removePiece(rem);
+    private void executeCatle(String king, String rook){
+        if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
+            if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){
+                setPiece("F8",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("G8",getPiece(king));
+            }
+            else{
+                setPiece("D8",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("C8",getPiece(king));
+            }
+            getPiece(king).setFirstMove(false);
+            removePiece(king);
+        }
+        else if(getPiece(king).getPosition().equals(new BoardPosition("E1"))){
+            if(getPiece(rook).getPosition().equals(new BoardPosition("H1"))){
+                setPiece("F1",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("G1",getPiece(king));
+            }
+            else{
+                setPiece("D1",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("C1",getPiece(king));
+            }
+            getPiece(king).setFirstMove(false);
+            removePiece(king);
+
+
+        }
+    }
+    private void updateEnpassant(BoardPosition bp){
+        for(int i = 0; i < board.LENGTH;i++){
+            for(int j = 0; j < board.LENGTH; j++){
+               BoardPosition check = new BoardPosition(i,j);
+               if(!check.equals(bp) && board.getPiece(check)!=null){
+                   board.getPiece(check).setEnp(false);
+               }
+            }
+        }
     }
     public String stringifyMove(int row, int col) {
         StringBuilder str = new StringBuilder();

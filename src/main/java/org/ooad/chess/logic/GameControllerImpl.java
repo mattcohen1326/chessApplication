@@ -33,6 +33,7 @@ public class GameControllerImpl implements GameController {
         board.forEach(entry -> {
             if (entry.getPiece() != null) {
                 engine.updateMoves(entry.getPosition().toString());
+
             }
         });
     }

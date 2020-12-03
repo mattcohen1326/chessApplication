@@ -1,6 +1,7 @@
 package org.ooad.chess.logic;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ooad.chess.logic.players.AIPlayer;
@@ -65,6 +66,15 @@ public class MovementTests {
         }
     }
 
+    @Test
+    public void testPawnMovesinGeneral(){
+        board = Board.filledBoard();
+        engine = new MoveEngine(board);
+        engine.movePiece("A2","A4");
+        Assert.assertEquals(false,board.getPiece(new BoardPosition("A4")).getFirst());
+        Assert.assertEquals(true,board.getPiece(new BoardPosition("A4")).getEnp());
+        engine.movePiece("B2","B4");
+    }
     @Test
     public void testCapture() {
         BoardPosition sourceLocation = pos("A1");
