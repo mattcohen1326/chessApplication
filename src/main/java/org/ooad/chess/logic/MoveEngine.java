@@ -140,7 +140,7 @@ public class MoveEngine {
         if (!hasPiece(from)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is empty", from, to, from));
         }
-        if(getPiece(from).getType() == ROOK && getPiece(to).getType() == KING && getPiece(from).getColor() == getPiece(to).getColor()){
+        if(getPiece(from) != null && getPiece(to) != null && getPiece(from).getType() == ROOK && getPiece(to).getType() == KING && getPiece(from).getColor() == getPiece(to).getColor()){
             if(validCastle(to,from)){
                 executeCatle(to,from);
                 return;
