@@ -35,6 +35,9 @@ public class MoveEngine {
         for (int i = 1; i <= LENGTH; i++) {
             for (int j = 1; j <= LENGTH; j++) {
                 boolean blocked = isBlocked(piece.getMovement().movePath(position, stringifyMove(i, j)));
+                if (piece.getMovement().movePossible(position, stringifyMove(i,j), piece.getFirst(), isEliminating(position, stringifyMove(i,j)))) {
+                    System.out.printf("%s\n", stringifyMove(i,j));
+                }
                 if (!blocked && piece.getMovement().movePossible(position, stringifyMove(i, j), piece.getFirst(), isEliminating(position, stringifyMove(i, j)))) {
                     if (piece.getType() == PAWN){
                         //System.out.println((int)piece.getPosition().toString().charAt(0)-63);
@@ -68,7 +71,7 @@ public class MoveEngine {
 
                     }
                     else if (piece.getType().equals(KING)) {
-                        if (!movesToCheck(piece.getPosition(), piece.getColor())) {
+                        if (!movesToCheck(stringifyMove(i,j), piece.getColor())) {
                             availableMoves.add(stringifyMove(i,j));
                         }
                     }
@@ -426,13 +429,13 @@ public class MoveEngine {
         return null;
     }
 
-    public boolean movesToCheck(BoardPosition to, ChessmanColor color) {
+    public boolean movesToCheck(String to, ChessmanColor color) {
         for (int i = 0; i < board.getPieces().length; i++) {
             BoardPiece piece = board.getPieces()[i];
             if (piece != null) {
                 if (piece.getColor() != color) {
-                    if (piece.getMovement().movePossible(piece.getPosition().toString(), to.toString(), false, true)) {
-                        List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), to.toString());
+                    if (piece.getMovement().movePossible(piece.getPosition().toString(), to, false, true)) {
+                        List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), to);
                         if (!isBlocked(path)) {
                             return true;
                         }

@@ -129,7 +129,7 @@ public class MovementTests {
         board.setPiece(pos("B7"), new BoardPiece(ROOK, BLACK));
         engine.updateMoves(king);
 
-        Set<BoardPosition> expectedMoves = Set.of(pos("A1"));
+        Set<BoardPosition> expectedMoves = Set.of(pos("A2"));
         assertEquals(expectedMoves, Set.copyOf(king.getAvailableMoves()));
     }
 
