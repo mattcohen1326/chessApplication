@@ -69,7 +69,7 @@ public class Board implements Iterable<Board.Entry> {
         System.out.println(toString());
     }
 
-    private int getIndex(BoardPosition position) {
+    public int getIndex(BoardPosition position) {
         return position.getRow() * LENGTH + position.getCol();
     }
 

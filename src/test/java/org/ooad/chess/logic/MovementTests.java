@@ -243,6 +243,14 @@ public class MovementTests {
         engine.updateMoves(pawn);
 
         assertFalse(pawn.getAvailableMoves().contains(pos("B4")));
+
+        BoardPiece blackPawn = new BoardPiece(PAWN, BLACK);
+        board.setPiece(pos("E4"), blackPawn);
+        board.setPiece(pos("D5"), new BoardPiece(BISHOP, WHITE));
+
+        engine.updateMoves(blackPawn);
+
+        assertFalse(blackPawn.getAvailableMoves().contains(pos("D5")));
     }
 
     @After

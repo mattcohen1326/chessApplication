@@ -110,18 +110,19 @@ public class MoveEngine {
         }
         BoardPosition fromPosition = new BoardPosition(from);
         BoardPiece sourcePiece = board.getPiece(fromPosition);
-        if (!sourcePiece.getMovement().movePossible(from, to, sourcePiece.getFirst(), isEliminating(from, to))) {
+        BoardPosition toPos = new BoardPosition(to);
+        /*if (!sourcePiece.getMovement().movePossible(from, to, sourcePiece.getFirst(), isEliminating(from, to))) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, sourcePiece.getType()));
-        }
-        /*updateMoves(from);
-        if (!getPiece(fromIndex).getAvailable_moves().contains(to)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, getPiece(fromIndex).getType()));
         }*/
+        updateMoves(from);
+        if (!sourcePiece.getAvailableMoves().contains(toPos)) {
+            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, board.getPiece(fromPosition).getType()));
+        }
 
-        List<String> path = sourcePiece.getMovement().movePath(from, to);
+        /*List<String> path = sourcePiece.getMovement().movePath(from, to);
         if (isBlocked(path)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
-        }
+        }*/
 
         if (isEliminating(from, to)) {
             if (getPiece(from).getType() == PAWN) {
