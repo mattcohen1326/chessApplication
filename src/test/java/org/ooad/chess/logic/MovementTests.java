@@ -30,7 +30,7 @@ public class MovementTests {
         engine = new MoveEngine(board);
     }
 
-    /*@Test
+    @Test
     public void testStartingPawnMoves() {
         // White
         for (int col = 0; col < LENGTH; col++) {
@@ -85,7 +85,7 @@ public class MovementTests {
 
         engine.movePiece(sourceLocation.toString(), targetLocation.toString());
         
-    }*/
+    }
 
     @Test
     public void testPawnMove_idk() {
