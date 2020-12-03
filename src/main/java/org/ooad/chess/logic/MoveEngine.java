@@ -161,10 +161,6 @@ public class MoveEngine {
         updateEnpassant(new BoardPosition(to));
 
     }
-    public void testHelp(String pos){
-        BoardPosition bp = new BoardPosition(pos);
-        removePiece(pos);
-    }
     private void executeCatle(String king, String rook){
         if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
             if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){

@@ -22,15 +22,7 @@ public class Main {
         MoveEngine engine = new MoveEngine(board);
         //engine.testHelp("D2");//System.out.println(board.getPiece(new BoardPosition("A1")).getType());
 
-        engine.testHelp("B1");
-        engine.testHelp("C1");
-        engine.testHelp("D1");
-        engine.updateMoves("A1");
-        engine.updateMoves("D8");
-        System.out.println(engine.validCastle("E1","A1"));
-        System.out.println(board.getPiece(new BoardPosition("A1")).getAvailableMoves());
-        engine.movePiece("A1","E1");
-        System.out.println(board.getPiece(new BoardPosition("D1")).getType());
+
         //System.out.println(engine.isBlocked(board.getPiece(new BoardPosition("D8")).getMovement().movePath("D8","E")))
         //System.out.println(board.getPiece(new BoardPosition("E8")).getType());
     }
