@@ -208,7 +208,9 @@ public class MovementTests {
 
     @Test
     public void exposeKingCheck() {
+
         board.setPiece(pos("A1"), new BoardPiece(KING, WHITE));
+        board.setPiece(pos("B2"), new BoardPiece(KING, WHITE));
         BoardPiece whiteRook = new BoardPiece(ROOK, WHITE);
         board.setPiece(pos("B1"), whiteRook);
         board.setPiece(pos("C1"), new BoardPiece(QUEEN, BLACK));

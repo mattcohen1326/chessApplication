@@ -329,6 +329,12 @@ public class MoveEngine {
     }
 
     private boolean castleCheck(ArrayList<BoardPiece> enemies, int dist, String king, String rook, String dir) {
+        if ((getNeighbor(king, dir, dist)) == null){
+            return false;
+        }
+        if(getPiece(getNeighbor(king,dir,dist))==null){
+            return false;
+        }
         if (getPiece(getNeighbor(king, dir, dist)).getType() == ChessmanTypes.ROOK && getNeighbor(king,dir,dist).equals(rook)) {
             for (int i = 1; i < dist; i++) {
                 if (getPiece(getNeighbor(king, dir, i)) != null) {
