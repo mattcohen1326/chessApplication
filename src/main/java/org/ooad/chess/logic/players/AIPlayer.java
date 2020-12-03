@@ -44,13 +44,13 @@ public class AIPlayer extends Player implements AutoPlayer {
         if (difficulty == GameDifficulty.EASY) {
             return pickEasyMove(board, inCheck);
         } else if (difficulty == GameDifficulty.MEDIUM) {
-            return pickMediumMove(board);
+            return pickMediumMove(board,inCheck);
         } else {
             return null;
         }
     }
 
-    private BoardMove pickMediumMove(Board board) {
+    private BoardMove pickMediumMove(Board board,boolean inCheck) {
         //Idea: set values to capturing each piece, go through available moves, pick highest score.
         List<BoardPiece> pieces = computePieces(board);
         int totalPieces = pieces.size();
@@ -93,7 +93,7 @@ public class AIPlayer extends Player implements AutoPlayer {
             }
         }
         if(places[max_ind]==null){
-            System.out.println(max_ind);
+            return pickEasyMove(board,inCheck);
         }
         return places[max_ind];
     }
