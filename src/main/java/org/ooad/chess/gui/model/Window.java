@@ -49,15 +49,14 @@ public class Window extends JFrame implements GLEventListener {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-//            System.out.printf("FPS: %d%n", animator.getFPS());
         }
     }
 
     private void mouseClick(MouseClickType clickType, Point point) {
         DrawBox drawBox = new DrawBox(0,
                 0,
-                getWidth(),
-                getHeight(),
+                canvas.getWidth(),
+                canvas.getHeight(),
                 canvas.getWidth(),
                 canvas.getHeight());
         mouseClick(activeComponent, drawBox, clickType, point.x, point.y);

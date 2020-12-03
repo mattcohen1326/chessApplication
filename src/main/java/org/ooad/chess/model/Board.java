@@ -3,10 +3,7 @@ package org.ooad.chess.model;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.ooad.chess.model.ChessmanColor.BLACK;
 import static org.ooad.chess.model.ChessmanColor.WHITE;
@@ -69,27 +66,7 @@ public class Board implements Iterable<Board.Entry> {
      * Prints the chess board to the console
      */
     public void print() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = LENGTH * LENGTH - 1; i >= 0; i--) {
-            if (i % LENGTH == LENGTH - 1) {
-                sb.append(i / LENGTH + 1).append("|");
-            }
-            if (pieces[i] != null) {
-                BoardPiece piece = pieces[i];
-                sb.append(piece.getType().getString(piece.getColor())).append(" ");
-            } else {
-                sb.append("-\u3000");
-            }
-            if (i % LENGTH == 0) {
-                sb.append("\n");
-            }
-        }
-        sb.append("  ");
-        for (int i = 0; i < LENGTH; i++) {
-            String s = String.format("%c\u3000", (char) ('A' + i));
-            sb.append(s);
-        }
-        System.out.println(sb.toString());
+        System.out.println(toString());
     }
 
     private int getIndex(BoardPosition position) {
@@ -136,6 +113,38 @@ public class Board implements Iterable<Board.Entry> {
         }
         return entries.iterator();
     }
+
+    @Override
+    public String toString() {
+        List<String> rows = new ArrayList<>();
+
+        for (int row = 0; row < LENGTH; row++) {
+            StringBuilder rowSb = new StringBuilder();
+            rowSb.append(row + 1).append("|");
+            for (int col = 0; col < LENGTH; col++) {
+                BoardPosition position = new BoardPosition(row, col);
+                BoardPiece piece = getPiece(position);
+                if (piece != null) {
+                    rowSb.append(piece.getType().getString(piece.getColor())).append(" ");
+                } else {
+                    rowSb.append("-\u3000");
+                }
+            }
+            rows.add(rowSb.toString());
+        }
+
+        Collections.reverse(rows);
+        StringBuilder out = new StringBuilder(String.join("\n", rows));
+        out.append("\n  ");
+
+        for (int i = 0; i < LENGTH; i++) {
+            String s = String.format("%c\u3000", (char) ('A' + i));
+            out.append(s);
+        }
+
+        return out.toString();
+    }
+
 
     public static class Entry {
         private final BoardPosition position;

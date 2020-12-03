@@ -2,33 +2,27 @@ package org.ooad.chess.logic.players;
 
 import org.jetbrains.annotations.Nullable;
 import org.ooad.chess.model.*;
+import org.ooad.chess.model.player.AutoPlayer;
+import org.ooad.chess.model.player.Player;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import static org.ooad.chess.model.ChessmanTypes.KING;
 
-public class AIPlayer extends Player {
-    private GameDifficulty difficulty;
-    private List<BoardPiece> pieces;
-    private Board board;
+public class AIPlayer extends Player implements AutoPlayer {
 
+    private final GameDifficulty difficulty;
 
-    public AIPlayer(ChessmanColor playerColor, Board gameBoard) {
-        color = playerColor;
-        board = gameBoard;
-        pieces = new ArrayList<BoardPiece>();
-        updatePieces(board);
+    public AIPlayer(ChessmanColor color, GameDifficulty difficulty) {
+        super(color);
+        this.difficulty = difficulty;
     }
-    public List<BoardPiece> getPieces(){
-        return pieces;
-    }
+
     //following these values https://en.wikipedia.org/wiki/Chess_piece_relative_value
-    private int cost(BoardPosition pos) {
-        if(board.getPiece(pos) == null){
-            return 0;
-        }
+    private int cost(Board board, BoardPosition pos) {
         switch (board.getPiece(pos).getType()) {
             case QUEEN -> {
                 return 9;
@@ -45,38 +39,39 @@ public class AIPlayer extends Player {
         }
     }
 
-    public @Nullable BoardPosition pickMove() {
+    @Override
+    public BoardMove computeMove(Board board) {
         if (difficulty == GameDifficulty.EASY) {
-            return pickEasyMove();
+            return pickEasyMove(board);
         } else if (difficulty == GameDifficulty.MEDIUM) {
-            return pickMediumMove();
+            return pickMediumMove(board);
         } else {
             return null;
         }
     }
 
-    private BoardPosition pickMediumMove() {
+    private BoardMove pickMediumMove(Board board) {
         //Idea: set values to capturing each piece, go through available moves, pick highest score.
+        List<BoardPiece> pieces = computePieces(board);
         int totalPieces = pieces.size();
-        //System.out.println(totalPieces);
         int[] scores = new int[totalPieces];
-        BoardPosition[] places = new BoardPosition[totalPieces];
+        BoardMove[] places = new BoardMove[totalPieces];
         //for each peace
         for (int i = 0; i < totalPieces; i++) {
-            List<BoardPosition> moves = pieces.get(i).getAvailableMoves();
-            System.out.println(moves);
-            int max = -1;
+            BoardPiece sourcePiece = pieces.get(i);
+            List<BoardPosition> moves = sourcePiece.getAvailableMoves();
+            int max = 0;
             BoardPosition best = null;
             for (BoardPosition move : moves) {
-                if (board.getPiece(move) != null && board.getPiece(move).getType() == KING) {
-                    return move;
+                if (board.getPiece(move).getType() == KING) {
+                    return new BoardMove(sourcePiece.getPosition(), move);
                 }
-                if (cost(move) > max) {
-                    max = cost(move);
+                if (cost(board, move) > max) {
+                    max = cost(board, move);
                     best = move;
                 }
             }
-            places[i] = best;
+            places[i] = new BoardMove(sourcePiece.getPosition(), best);
             scores[i] = max;
         }
         int max_ind = 0;
@@ -90,31 +85,17 @@ public class AIPlayer extends Player {
         return places[max_ind];
     }
 
-    private @Nullable BoardPosition pickEasyMove() {
-        int total_pieces = pieces.size();
-        Random rand = new Random(); //instance of random class
-        //generate random values from 0-24
-        int randomPiece = rand.nextInt(total_pieces);
-        int movesSize = pieces.get(randomPiece).getAvailableMoves().size();
-        int randomMove = rand.nextInt(movesSize);
-        return pieces.get(randomPiece).getAvailableMoves().get(randomMove);
+    private @Nullable BoardMove pickEasyMove(Board board) {
+        return computePieces(board).stream()
+                .flatMap(piece -> piece.getAvailableMoves().stream().map(it -> new BoardMove(piece.getPosition(), it)))
+                .sorted((o1, o2) -> ThreadLocalRandom.current().nextInt(-1, 2))
+                .findAny()
+                .orElse(null);
     }
 
-    public void setDifficulty(GameDifficulty dif){
-        difficulty = dif;
-        return;
+    private List<BoardPiece> computePieces(Board board) {
+        return Arrays.stream(board.getPieces())
+                .filter(it -> it != null && it.getColor() == color)
+                .collect(Collectors.toList());
     }
-    public void updatePieces(Board b){
-        board = b;
-        pieces = new ArrayList<BoardPiece>();
-        for (int i = 0; i < board.getPieces().length; i++) {
-            if (board.getPieces()[i] == null){
-                continue;
-            }
-            else if (board.getPieces()[i].getColor() == color) {
-                pieces.add(board.getPieces()[i]);
-            }
-        }
-    }
-
 }

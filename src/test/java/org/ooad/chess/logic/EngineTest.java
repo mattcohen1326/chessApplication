@@ -4,9 +4,6 @@ import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.ooad.chess.logic.players.AIPlayer;
-import org.ooad.chess.logic.players.Player;
-import org.ooad.chess.logic.players.humanPlayer;
 import org.ooad.chess.model.*;
 
 public class EngineTest {
@@ -194,7 +191,7 @@ public class EngineTest {
         board.removePiece(new BoardPosition("D1"));
         Assert.assertEquals(true, engine.validCastle("D8", "A8"));
         //Assert.assertEquals(true,engine.validCastle("E1","A1"));
-        Assert.assertEquals(false,engine.validCastle("E1","H1"));
+        Assert.assertEquals(false, engine.validCastle("E1", "H1"));
     }
 
     // TODO remove

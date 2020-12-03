@@ -4,6 +4,7 @@ import org.ooad.chess.logic.behaviors.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a piece on a Chess board.
@@ -80,7 +81,36 @@ public class BoardPiece {
         this.availableMoves.addAll(availableMoves);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoardPiece that = (BoardPiece) o;
+        return firstMove == that.firstMove &&
+                enp == that.enp &&
+                type == that.type &&
+                color == that.color &&
+                Objects.equals(availableMoves, that.availableMoves) &&
+                Objects.equals(movement, that.movement) &&
+                Objects.equals(position, that.position);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, color, availableMoves, movement, firstMove, enp, position);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("BoardPiece{type=%s, color=%s, availableMoves=%s, movement=%s, firstMove=%s, enp=%s, position=%s}",
+                type,
+                color,
+                availableMoves,
+                movement,
+                firstMove,
+                enp,
+                position);
+    }
 }
 
 

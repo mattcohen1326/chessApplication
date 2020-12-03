@@ -97,18 +97,17 @@ public class MoveEngine {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is empty", from, to, from));
         }
 
-        int fromIndex = getIndex(from);
-        int toIndex = getIndex(to);
-
-        if (!getPiece(fromIndex).getMovement().movePossible(from, to, getPiece(fromIndex).getFirst(), isEliminating(from, to))) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, getPiece(fromIndex).getType()));
+        BoardPosition fromPosition = new BoardPosition(from);
+        BoardPiece sourcePiece = board.getPiece(fromPosition);
+        if (!sourcePiece.getMovement().movePossible(from, to, sourcePiece.getFirst(), isEliminating(from, to))) {
+            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, sourcePiece.getType()));
         }
         /*updateMoves(from);
         if (!getPiece(fromIndex).getAvailable_moves().contains(to)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, getPiece(fromIndex).getType()));
         }*/
 
-        List<String> path = getPiece(fromIndex).getMovement().movePath(from, to);
+        List<String> path = sourcePiece.getMovement().movePath(from, to);
         if (isBlocked(path)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
         }
@@ -144,16 +143,9 @@ public class MoveEngine {
                 }
             }
         }
-        setPiece(to, getPiece(fromIndex));
+        setPiece(to, board.getPiece(fromPosition));
         getPiece(from).setFirstMove(false);
         removePiece(from);
-    }
-
-    private String makePos(char col, char row) {
-        StringBuilder s = new StringBuilder();
-        s.append(col);
-        s.append(row);
-        return s.toString();
     }
 
     public String stringifyMove(int row, int col) {
@@ -386,17 +378,6 @@ public class MoveEngine {
         } else {
             return null;
         }
-    }
-
-    private @Nullable BoardPiece getPiece(int index) {
-        int row = index / LENGTH;
-        int col = index % LENGTH;
-        return board.getPiece(new BoardPosition(row, col));
-    }
-
-    private int getIndex(String location) {
-        BoardPosition position = new BoardPosition(location);
-        return position.getRow() * LENGTH + position.getCol();
     }
 
     private void removePiece(String location) {

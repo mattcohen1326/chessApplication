@@ -1,10 +1,10 @@
 package org.ooad.chess;
 
-
 import java.time.Duration;
 import java.time.Instant;
 
 public class GameStats {
+
     private int movesMade;
     private int eliminations;
     private int inCheck;

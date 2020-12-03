@@ -14,7 +14,7 @@ public class GuiMain {
 //        Component activeScreen = new MainMenu();
         Component activeScreen = new GameScreen();
 
-        Window window = new Window("Main");
+        Window window = new Window("OOAD Final Project: Chess");
         BackgroundColorComponent fullBg = new BackgroundColorComponent(new Color(66, 66, 66));
         FixedAspectComponent letterbox = new FixedAspectComponent(1, activeScreen);
         fullBg.addChild(letterbox);
