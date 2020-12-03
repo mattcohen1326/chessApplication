@@ -64,12 +64,9 @@ public class MoveEngine {
 
                     }
                     else if (piece.getType().equals(KING)) {
-                        String tmp = piece.getPosition().toString();
-                        setPiece(stringifyMove(i, j), piece);
-                        if (isInCheck() == null) {
+                        if (!movesToCheck(piece.getPosition(), piece.getColor())) {
                             availableMoves.add(stringifyMove(i,j));
                         }
-                        setPiece(tmp, piece);
                     }
                     else{
                         //System.out.println(stringifyMove(i,j));
@@ -354,13 +351,35 @@ public class MoveEngine {
                 } else {
                     king = board.getPiece(kings[0]);
                 }
+
                 if (piece.getMovement().movePossible(piece.getPosition().toString(), king.getPosition().toString(), false, true)) {
-                    return king.getColor();
+                    List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), king.getPosition().toString());
+                    if (!isBlocked(path)) {
+                        return king.getColor();
+                    }
                 }
             }
         }
 
         return null;
+    }
+
+    public boolean movesToCheck(BoardPosition to, ChessmanColor color) {
+        for (int i = 0; i < board.getPieces().length; i++) {
+            BoardPiece piece = board.getPieces()[i];
+            if (piece != null) {
+                if (piece.getColor() != color) {
+                    if (piece.getMovement().movePossible(piece.getPosition().toString(), to.toString(), false, true)) {
+                        List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), to.toString());
+                        if (!isBlocked(path)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     // Compatability methods
