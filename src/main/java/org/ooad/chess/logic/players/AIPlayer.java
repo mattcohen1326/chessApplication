@@ -56,6 +56,11 @@ public class AIPlayer extends Player implements AutoPlayer {
         int totalPieces = pieces.size();
         int[] scores = new int[totalPieces];
         BoardMove[] places = new BoardMove[totalPieces];
+        if(inCheck){
+            for(int i = 0; i < board.getKing(ChessmanColor.BLACK).getAvailableMoves().size(); i++){
+                return(new BoardMove(board.getKing(ChessmanColor.BLACK).getPosition(),board.getKing(ChessmanColor.BLACK).getAvailableMoves().get(i)));
+            }
+        }
         //for each peace
         for (int i = 0; i < totalPieces; i++) {
             BoardPiece sourcePiece = pieces.get(i);
