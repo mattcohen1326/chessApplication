@@ -20,14 +20,14 @@ public class Main {
         Board board = Board.filledBoard();
         MoveEngine engine = new MoveEngine(board);
         //engine.testHelp("D2");//System.out.println(board.getPiece(new BoardPosition("A1")).getType());
-        //engine.testHelp("B2");
-        //engine.updateMoves("A2");
+        engine.testHelp("F1");
+        engine.testHelp("G1");
+        engine.updateMoves("H1");
         //System.out.println(board.getPieces()[48].getType());
-        //System.out.println(board.getPieces()[8].getAvailableMoves().get(0).toString().equals("A3"));
-        engine.movePiece("B1", "C3");
-        System.out.println(board.getPiece(new BoardPosition("C2")).getColor());
-        System.out.println(board.getPiece(new BoardPosition("C2")).getMovement().movePath("C2","C3"));
-        System.out.println(engine.isBlocked(board.getPiece(new BoardPosition("C2")).getMovement().movePath("C2","C3")));
-        engine.movePiece("C2", "C3");
+        System.out.println(board.getPieces()[7].getAvailableMoves());
+        //System.out.println(board.getPiece(new BoardPosition("E8")).getType());
+        System.out.println(engine.validCastle("E1","H1"));
+        engine.movePiece("H1","E1");
+        System.out.println(board.getPiece(new BoardPosition("G1")).getType());
     }
 }

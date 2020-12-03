@@ -36,7 +36,6 @@ public class MoveEngine {
             for (int j = 1; j <= LENGTH; j++) {
                 boolean blocked = isBlocked(piece.getMovement().movePath(position, stringifyMove(i, j)));
                 if (!blocked && piece.getMovement().movePossible(position, stringifyMove(i, j), piece.getFirst(), isEliminating(position, stringifyMove(i, j)))) {
-
                     if (piece.getType() == PAWN){
                         //System.out.println((int)piece.getPosition().toString().charAt(0)-63);
                         //TODO MAKE THIS SPECIFIC TO COLOR
@@ -78,6 +77,13 @@ public class MoveEngine {
                         availableMoves.add(stringifyMove(i,j));
                     }
                 }
+                else if(blocked && piece.getType() == ROOK && getPiece(stringifyMove(i,j))!=null){
+                    if(getPiece(stringifyMove(i,j)).getType() == KING && getPiece(stringifyMove(i,j)).getColor() == piece.getColor()){
+                        if(validCastle(stringifyMove(i,j),piece.getPosition().toString())){
+                            availableMoves.add(stringifyMove(i,j));
+                        }
+                    }
+                }
             }
         }
         piece.setAvailableMoves(availableMoves.stream().map(BoardPosition::new).collect(Collectors.toList()));
@@ -91,6 +97,42 @@ public class MoveEngine {
      * @param to   The destination.
      * @throws IllegalStateException if the source location is empty or the destination is full, if the move is invalid given the type, or if the move is blocked by another piece.
      */
+    private void executeCatle(String king, String rook){
+        if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
+            if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){
+                setPiece("F8",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("G8",getPiece(king));
+            }
+            else{
+                setPiece("D8",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("C8",getPiece(king));
+            }
+            getPiece(king).setFirstMove(false);
+            removePiece(king);
+        }
+        else if(getPiece(king).getPosition().equals(new BoardPosition("E1"))){
+            if(getPiece(rook).getPosition().equals(new BoardPosition("H1"))){
+                setPiece("F1",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("G1",getPiece(king));
+            }
+            else{
+                setPiece("D1",getPiece(rook));
+                getPiece(rook).setFirstMove(false);
+                removePiece(rook);
+                setPiece("C1",getPiece(king));
+            }
+            getPiece(king).setFirstMove(false);
+            removePiece(king);
+
+
+        }
+    }
     public void movePiece(String from, String to) {
         /*if (hasPiece(to)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is not empty", from, to, to));
@@ -98,7 +140,12 @@ public class MoveEngine {
         if (!hasPiece(from)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is empty", from, to, from));
         }
-
+        if(getPiece(from).getType() == ROOK && getPiece(to).getType() == KING && getPiece(from).getColor() == getPiece(to).getColor()){
+            if(validCastle(to,from)){
+                executeCatle(to,from);
+                return;
+            }
+        }
         BoardPosition fromPosition = new BoardPosition(from);
         BoardPiece sourcePiece = board.getPiece(fromPosition);
         if (!sourcePiece.getMovement().movePossible(from, to, sourcePiece.getFirst(), isEliminating(from, to))) {
@@ -145,11 +192,15 @@ public class MoveEngine {
                 }
             }
         }
+
         setPiece(to, board.getPiece(fromPosition));
         getPiece(from).setFirstMove(false);
         removePiece(from);
     }
 
+    public void testHelp(String rem){
+        removePiece(rem);
+    }
     public String stringifyMove(int row, int col) {
         StringBuilder str = new StringBuilder();
         str.append((char) (col + 64));
@@ -315,19 +366,18 @@ public class MoveEngine {
         //IT IS A BISHOP IT SHOULD BE A ROOK
         boolean check1 = false;
         boolean check2 = false;
-
+        ArrayList<BoardPiece> enemies = new ArrayList<>();
         switch (color) {
             case WHITE -> {
-                ArrayList<BoardPiece> enemies = getColorPieces(BLACK);
-                check1 = castleCheck(enemies, 3, king, rook, "right");
-                check2 = castleCheck(enemies, 4, king, rook, "left");
+                enemies = getColorPieces(BLACK);
+
             }
-                case BLACK -> {
-                    ArrayList<BoardPiece> enemies = getColorPieces(WHITE);
-                    check1 = castleCheck(enemies, 4, king, rook, "right");
-                    check2 = castleCheck(enemies, 3, king, rook, "left");
-                }
+            case BLACK -> {
+                enemies = getColorPieces(WHITE);
+            }
         }
+        check1 = castleCheck(enemies, 3, king, rook, "right");
+        check2 = castleCheck(enemies, 4, king, rook, "left");
         if(check1 || check2){
             return true;
         }
