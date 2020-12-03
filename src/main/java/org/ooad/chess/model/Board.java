@@ -73,25 +73,6 @@ public class Board implements Iterable<Board.Entry> {
         return position.getRow() * LENGTH + position.getCol();
     }
 
-    /**
-     * Create a new, populated, chess board.
-     *
-     * @return - a new chess board with the standard piece configuration
-     */
-    public static Board filledBoard() {
-        ChessmanTypes[] bottomTypes = {ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK};
-        Board board = new Board();
-        for (int col = 0; col < LENGTH; col++) {
-            board.setPiece(new BoardPosition(1, col), makePiece(PAWN, WHITE));
-            board.setPiece(new BoardPosition(0, col), makePiece(bottomTypes[col], WHITE));
-
-            board.setPiece(new BoardPosition(6, col), makePiece(PAWN, BLACK));
-            board.setPiece(new BoardPosition(7, col), makePiece(bottomTypes[col], BLACK));
-        }
-
-        return board;
-    }
-
     private static BoardPiece makePiece(ChessmanTypes type, ChessmanColor color) {
         return new BoardPiece(type, color);
     }
@@ -150,6 +131,73 @@ public class Board implements Iterable<Board.Entry> {
                 .filter(it -> it != null && it.getColor() == color && it.getType() == KING)
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public String toFen() {
+        StringBuilder fen = new StringBuilder();
+        for (int row = LENGTH - 1; row >= 0; row--) {
+            int empty = 0;
+            for (int col = 0; col < LENGTH; col++) {
+                BoardPosition position = new BoardPosition(row, col);
+                BoardPiece piece = getPiece(position);
+                if (piece == null) {
+                    empty++;
+                } else {
+                    if (empty != 0) {
+                        fen.append(empty);
+                        empty = 0;
+                    }
+                    fen.append(piece.toFen());
+                }
+            }
+            if (empty != 0) {
+                fen.append(empty);
+            }
+            if (row != 0) {
+                fen.append("/");
+            }
+        }
+        return fen.toString();
+    }
+
+    /**
+     * Create a new, populated, chess board.
+     *
+     * @return - a new chess board with the standard piece configuration
+     */
+    public static Board filledBoard() {
+        ChessmanTypes[] bottomTypes = {ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK};
+        Board board = new Board();
+        for (int col = 0; col < LENGTH; col++) {
+            board.setPiece(new BoardPosition(1, col), makePiece(PAWN, WHITE));
+            board.setPiece(new BoardPosition(0, col), makePiece(bottomTypes[col], WHITE));
+
+            board.setPiece(new BoardPosition(6, col), makePiece(PAWN, BLACK));
+            board.setPiece(new BoardPosition(7, col), makePiece(bottomTypes[col], BLACK));
+        }
+
+        return board;
+    }
+
+    public static Board fromFen(String fen) {
+        Board board = new Board();
+        String[] rows = fen.split("/");
+        for (int i = 0; i < LENGTH; i++) {
+            int rowIndex = LENGTH - i - 1;
+            String row = rows[i];
+
+            int columnIndex = 0;
+            for (char c : row.toCharArray()) {
+                if (Character.isAlphabetic(c)) {
+                    BoardPosition position = new BoardPosition(rowIndex, columnIndex);
+                    board.setPiece(position, BoardPiece.fromFen(c));
+                    columnIndex++;
+                } else {
+                    columnIndex += Character.digit(c, 10);
+                }
+            }
+        }
+        return board;
     }
 
     public static class Entry {

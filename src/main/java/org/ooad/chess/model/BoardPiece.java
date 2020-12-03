@@ -3,8 +3,12 @@ package org.ooad.chess.model;
 import org.ooad.chess.logic.behaviors.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static org.ooad.chess.model.ChessmanColor.BLACK;
+import static org.ooad.chess.model.ChessmanColor.WHITE;
 
 /**
  * Represents a piece on a Chess board.
@@ -81,6 +85,10 @@ public class BoardPiece {
         this.availableMoves.addAll(availableMoves);
     }
 
+    public char toFen() {
+        return type.getFen(color);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,6 +118,15 @@ public class BoardPiece {
                 firstMove,
                 enp,
                 position);
+    }
+
+    public static BoardPiece fromFen(char fen) {
+        ChessmanColor color = Character.isUpperCase(fen) ? WHITE : BLACK;
+        ChessmanTypes type = Arrays.stream(ChessmanTypes.values())
+                .filter(it -> it.getFen(BLACK) == Character.toLowerCase(fen))
+                .findFirst()
+                .orElseThrow();
+        return new BoardPiece(type, color);
     }
 }
 
