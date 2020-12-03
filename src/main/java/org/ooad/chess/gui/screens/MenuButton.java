@@ -1,4 +1,4 @@
-package org.ooad.chess.gui.screens.main;
+package org.ooad.chess.gui.screens;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -12,18 +12,18 @@ import org.ooad.chess.gui.model.listener.MouseClickListener;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-class MainMenuButton extends Component {
+public class MenuButton extends Component {
 
-    private static final Color ACTIVE = new Color(92, 92, 92, 128);
-    private static final Color IDLE = new Color(92, 92, 92, 72);
+    private static final Color ACTIVE = new Color(92, 92, 92, 250);
+    private static final Color IDLE = new Color(92, 92, 92, 200);
 
-    private String text;
+    private final String text;
     private Runnable click = () -> {
     };
 
     private TextRenderer textRenderer;
 
-    public MainMenuButton(String text) {
+    public MenuButton(String text) {
         this.text = text;
     }
 

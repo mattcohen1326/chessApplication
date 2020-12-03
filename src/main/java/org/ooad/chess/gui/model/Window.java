@@ -102,7 +102,10 @@ public class Window extends JFrame implements GLEventListener {
     }
 
     private void init(Component component, GLAutoDrawable drawable) {
-        component.init(drawable);
+        if (!component.initialized) {
+            component.init(drawable);
+            component.initialized = true;
+        }
         component.getChildren().forEach(child -> init(child, drawable));
     }
 
@@ -123,17 +126,23 @@ public class Window extends JFrame implements GLEventListener {
                 canvas.getWidth(),
                 canvas.getHeight(),
                 canvas.getWidth(),
-                canvas.getHeight()), gl);
+                canvas.getHeight()), gl, drawable);
         gl.glPopMatrix();
     }
 
-    private void draw(Component component, DrawBox parentDrawBox, GL2 gl) {
+    private void draw(Component component, DrawBox parentDrawBox, GL2 gl, GLAutoDrawable glAutoDrawable) {
+        if (!component.initialized) {
+            component.init(glAutoDrawable);
+            component.initialized = true;
+        }
+
         DrawBox childDrawBox = parentDrawBox.computeChild(component);
         gl.glPushMatrix();
         gl.glTranslated(component.x1, component.y1, 0);
         gl.glScaled(component.x2 - component.x1, component.y2 - component.y1, 1);
+
         component.drawBeforeChildren(gl, childDrawBox);
-        component.getChildren().forEach(child -> draw(child, childDrawBox, gl));
+        component.getChildren().forEach(child -> draw(child, childDrawBox, gl, glAutoDrawable));
         component.drawAfterChildren(gl, childDrawBox);
         gl.glPopMatrix();
     }

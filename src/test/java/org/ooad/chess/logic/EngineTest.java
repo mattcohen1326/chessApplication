@@ -6,6 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.ooad.chess.model.*;
 
+import static org.junit.Assert.assertNull;
+import static org.ooad.chess.model.ChessmanColor.*;
+import static org.ooad.chess.model.ChessmanTypes.*;
+
 public class EngineTest {
 
     private Board board;
@@ -81,9 +85,9 @@ public class EngineTest {
     public void checkPawnMoves() {
         board = new Board();
         engine = new MoveEngine(board);
-        BoardPiece p = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.WHITE);
+        BoardPiece p = new BoardPiece(ChessmanTypes.PAWN, WHITE);
         setPiece("D3", p);
-        BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, BLACK);
         setPiece("D4", enemy);
         setPiece("C4", enemy);
         setPiece("E4", enemy);
@@ -97,11 +101,11 @@ public class EngineTest {
     public void checkRookMoves() {
         board = new Board();
         engine = new MoveEngine(board);
-        BoardPiece r = new BoardPiece(ChessmanTypes.ROOK, ChessmanColor.WHITE);
+        BoardPiece r = new BoardPiece(ChessmanTypes.ROOK, WHITE);
         setPiece("A1", r);
         Assert.assertEquals(true, r.getMovement().movePossible("A1", "A8", true, false));
-        BoardPiece teammate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.WHITE);
-        BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        BoardPiece teammate = new BoardPiece(ChessmanTypes.PAWN, WHITE);
+        BoardPiece enemy = new BoardPiece(ChessmanTypes.PAWN, BLACK);
         setPiece("A5", teammate);
         setPiece("B1", enemy);
         Assert.assertEquals(true, engine.isBlocked(r.getMovement().movePath("A1", "A8")));
@@ -114,9 +118,9 @@ public class EngineTest {
     public void checkBishopMoves() {
         board = new Board();
         engine = new MoveEngine(board);
-        BoardPiece bishop = new BoardPiece(ChessmanTypes.BISHOP, ChessmanColor.WHITE);
+        BoardPiece bishop = new BoardPiece(ChessmanTypes.BISHOP, WHITE);
         setPiece("D4", bishop);
-        BoardPiece enemy = new BoardPiece(ChessmanTypes.BISHOP, ChessmanColor.BLACK);
+        BoardPiece enemy = new BoardPiece(ChessmanTypes.BISHOP, BLACK);
         setPiece("E5", enemy);
         Assert.assertEquals(false, bishop.getMovement().movePossible("D4", "D5", false, false));
         Assert.assertEquals(true, bishop.getMovement().movePossible("D4", "F6", false, false));
@@ -129,8 +133,8 @@ public class EngineTest {
     public void checkKnightMoves() {
         board = new Board();
         engine = new MoveEngine(board);
-        BoardPiece knight = new BoardPiece(ChessmanTypes.KNIGHT, ChessmanColor.WHITE);
-        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        BoardPiece knight = new BoardPiece(ChessmanTypes.KNIGHT, WHITE);
+        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, BLACK);
         setPiece("E6", toEliminate);
         setPiece("D4", knight);
 
@@ -149,8 +153,8 @@ public class EngineTest {
     public void checkQueenMoves() {
         board = new Board();
         engine = new MoveEngine(board);
-        BoardPiece queen = new BoardPiece(ChessmanTypes.QUEEN, ChessmanColor.WHITE);
-        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        BoardPiece queen = new BoardPiece(ChessmanTypes.QUEEN, WHITE);
+        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, BLACK);
         setPiece("E5", toEliminate);
         setPiece("D4", queen);
 
@@ -168,8 +172,8 @@ public class EngineTest {
         board = new Board();
         engine = new MoveEngine(board);
 
-        BoardPiece king = new BoardPiece(ChessmanTypes.KING, ChessmanColor.WHITE);
-        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, ChessmanColor.BLACK);
+        BoardPiece king = new BoardPiece(KING, WHITE);
+        BoardPiece toEliminate = new BoardPiece(ChessmanTypes.PAWN, BLACK);
         setPiece("E5", toEliminate);
         setPiece("D4", king);
 
@@ -196,7 +200,9 @@ public class EngineTest {
 
     // TODO remove
     private void setPiece(String location, BoardPiece piece) {
-        board.setPiece(new BoardPosition(location), piece);
+        BoardPosition position = new BoardPosition(location);
+        board.setPiece(position, piece);
+        piece.setPosition(position);
     }
 
     private @Nullable BoardPiece getPiece(String location) {
@@ -208,9 +214,9 @@ public class EngineTest {
         board = new Board();
         engine = new MoveEngine(board);
 
-        BoardPiece king1 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.WHITE);
-        BoardPiece king2 = new BoardPiece(ChessmanTypes.KING, ChessmanColor.BLACK);
-        BoardPiece bishop = new BoardPiece(ChessmanTypes.BISHOP, ChessmanColor.BLACK);
+        BoardPiece king1 = new BoardPiece(KING, WHITE);
+        BoardPiece king2 = new BoardPiece(KING, BLACK);
+        BoardPiece bishop = new BoardPiece(ChessmanTypes.BISHOP, BLACK);
 
         setPiece("A3", king1);
         setPiece("A8", king2);
@@ -239,4 +245,19 @@ public class EngineTest {
 
         Assert.assertTrue(engine.isInCheckmate());
     }*/
+
+    @Test
+    public void kingCheckRook() {
+        board = new Board();
+        engine = new MoveEngine(board);
+
+        BoardPiece whiteKing = new BoardPiece(KING, WHITE);
+        setPiece("C1", whiteKing);
+        setPiece("B1", new BoardPiece(ROOK, WHITE));
+        setPiece("A1", new BoardPiece(ROOK, BLACK));
+
+        setPiece("H7", new BoardPiece(KING, BLACK));
+
+        assertNull(engine.isInCheck());
+    }
 }

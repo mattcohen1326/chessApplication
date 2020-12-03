@@ -20,6 +20,10 @@ public class MoveEngine {
         this.board = board;
     }
 
+    public void updateMoves(BoardPiece piece) {
+        updateMoves(piece.getPosition().toString());
+    }
+
     public void updateMoves(String position) {
         BoardPiece piece = getPiece(position);
         //System.out.println(piece.getPosition().toString());

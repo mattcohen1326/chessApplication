@@ -6,6 +6,7 @@ import org.ooad.chess.gui.component.FixedAspectComponent;
 import org.ooad.chess.gui.component.ImageComponent;
 import org.ooad.chess.gui.component.PaddedComponent;
 import org.ooad.chess.gui.model.Component;
+import org.ooad.chess.gui.screens.MenuButton;
 
 public class MainMenu extends Component {
 
@@ -29,7 +30,7 @@ public class MainMenu extends Component {
                     {
                         y1 = 0.5;
                         y2 = 0.6;
-                        addChild(new MainMenuButton("New Game") {
+                        addChild(new MenuButton("New Game") {
                             {
                                 setClick(() -> {
                                     // TODO move to new game

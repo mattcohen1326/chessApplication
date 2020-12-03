@@ -3,9 +3,9 @@ package org.ooad.chess.gui.model;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.ooad.chess.gui.model.listener.MouseClickListener.MouseClickType;
 
@@ -13,6 +13,8 @@ public abstract class Component {
 
     private final List<Component> children = new LinkedList<>();
     protected boolean containsMouse;
+
+    boolean initialized;
 
     protected double x1 = 0;
     protected double y1 = 0;
@@ -45,7 +47,7 @@ public abstract class Component {
     }
 
     public List<Component> getChildren() {
-        return Collections.unmodifiableList(children);
+        return children.stream().collect(Collectors.toUnmodifiableList());
     }
 
     public boolean addChild(Component component) {

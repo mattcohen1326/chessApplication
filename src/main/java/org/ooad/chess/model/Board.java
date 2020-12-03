@@ -145,6 +145,12 @@ public class Board implements Iterable<Board.Entry> {
         return out.toString();
     }
 
+    public BoardPiece getKing(ChessmanColor color) {
+        return Arrays.stream(pieces)
+                .filter(it -> it != null && it.getColor() == color && it.getType() == KING)
+                .findFirst()
+                .orElseThrow();
+    }
 
     public static class Entry {
         private final BoardPosition position;

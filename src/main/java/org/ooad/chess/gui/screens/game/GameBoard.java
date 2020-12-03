@@ -7,7 +7,7 @@ import org.ooad.chess.gui.graphics.GraphicsUtils;
 import org.ooad.chess.gui.model.Component;
 import org.ooad.chess.gui.model.DrawBox;
 import org.ooad.chess.gui.model.listener.MouseClickListener;
-import org.ooad.chess.logic.IGameController;
+import org.ooad.chess.logic.GameController;
 import org.ooad.chess.model.Board;
 import org.ooad.chess.model.BoardMove;
 import org.ooad.chess.model.BoardPiece;
@@ -24,16 +24,17 @@ import static org.ooad.chess.gui.model.listener.MouseClickListener.MouseClickTyp
 
 class GameBoard extends Component {
 
-    private final IGameController gameController;
+    private final GameController game;
     private final Board board;
 
     private final Set<Component> childPieces = new HashSet<>();
+    private boolean completed;
 
     private BoardPosition selected;
 
-    GameBoard(IGameController gameController) {
-        this.gameController = gameController;
-        this.board = gameController.getBoard();
+    GameBoard(GameController game) {
+        this.game = game;
+        this.board = game.getBoard();
     }
 
     @Override
@@ -43,25 +44,42 @@ class GameBoard extends Component {
         addPieceChildren();
     }
 
+    public void updateBoard() {
+        addPieceChildren();
+        if (game.isInCheck(game.getCurrentPlayer())) {
+            selected = game.getBoard().getKing(game.getCurrentPlayer().getColor()).getPosition();
+        }
+    }
+
+    @Override
+    public void drawBeforeChildren(GL2 gl, DrawBox drawBox) {
+        if (game.isInCheckmate() && !completed) {
+            completed = true;
+            addChild(new EndScreen());
+        }
+    }
+
     @Override
     public void mouseClick(MouseClickListener.MouseClickType clickType, double x, double y) {
-        if (clickType != LEFT) {
+        if (clickType != LEFT || completed) {
             return;
         }
 
         int col = (int) Math.floor(x / (1 / 8.0));
         int row = (int) Math.floor((1 - y) / (1 / 8.0));
 
-
         BoardPosition position = new BoardPosition(row, col);
         if (selected == null) {
             selected = position;
         } else {
-            boolean result = gameController.makeMove(new BoardMove(selected, position));
+            boolean result = game.makeMove(new BoardMove(selected, position));
             if (result) {
-                addPieceChildren();
+                updateBoard();
             }
-            selected = null;
+
+            if (!game.isInCheck(game.getCurrentPlayer())) {
+                selected = null;
+            }
         }
     }
 

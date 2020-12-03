@@ -1,6 +1,5 @@
 package org.ooad.chess.logic.players;
 
-import org.jetbrains.annotations.Nullable;
 import org.ooad.chess.model.*;
 import org.ooad.chess.model.player.AutoPlayer;
 import org.ooad.chess.model.player.Player;
@@ -40,9 +39,9 @@ public class AIPlayer extends Player implements AutoPlayer {
     }
 
     @Override
-    public BoardMove computeMove(Board board) {
+    public BoardMove computeMove(Board board, boolean inCheck) {
         if (difficulty == GameDifficulty.EASY) {
-            return pickEasyMove(board);
+            return pickEasyMove(board, inCheck);
         } else if (difficulty == GameDifficulty.MEDIUM) {
             return pickMediumMove(board);
         } else {
@@ -85,12 +84,13 @@ public class AIPlayer extends Player implements AutoPlayer {
         return places[max_ind];
     }
 
-    private @Nullable BoardMove pickEasyMove(Board board) {
+    private BoardMove pickEasyMove(Board board, boolean inCheck) {
         return computePieces(board).stream()
+                .filter(it -> !inCheck || it.getType() == KING)
                 .flatMap(piece -> piece.getAvailableMoves().stream().map(it -> new BoardMove(piece.getPosition(), it)))
                 .sorted((o1, o2) -> ThreadLocalRandom.current().nextInt(-1, 2))
                 .findAny()
-                .orElse(null);
+                .orElseThrow();
     }
 
     private List<BoardPiece> computePieces(Board board) {
