@@ -221,7 +221,6 @@ public class MovementTests {
 
     @Test
     public void exposeKingCheck() {
-
         board.setPiece(pos("A1"), new BoardPiece(KING, WHITE));
         board.setPiece(pos("B2"), new BoardPiece(KING, WHITE));
         BoardPiece whiteRook = new BoardPiece(ROOK, WHITE);
@@ -251,6 +250,21 @@ public class MovementTests {
         engine.updateMoves(blackPawn);
 
         assertFalse(blackPawn.getAvailableMoves().contains(pos("D5")));
+    }
+
+    @Test
+    public void testMoveKingIntoCheckmate() {
+        board = Board.filledBoard();
+        engine = new MoveEngine(board);
+
+        board.removePiece(pos("F8"));
+        board.setPiece(pos("D8"), new BoardPiece(ROOK, WHITE));
+
+        BoardPiece blackKing = board.getKing(BLACK);
+        engine.updateMoves(blackKing);
+
+        Set<BoardPosition> expected = Set.of(pos("D8"));
+        assertEquals(expected, new HashSet<>(blackKing.getAvailableMoves()));
     }
 
     @After

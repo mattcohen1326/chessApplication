@@ -57,8 +57,8 @@ public class GameControllerImpl implements GameController {
         System.out.println("Make move: " + currentPlayer.getColor() + " " + boardMove);
         BoardPiece sourcePiece = board.getPiece(boardMove.getFrom());
         if (sourcePiece != null && sourcePiece.getColor() == currentPlayer.getColor()) {
-            BoardPiece targetPiece = board.getPiece(boardMove.getTo());
-            if (targetPiece == null || targetPiece.getColor() != currentPlayer.getColor()) {
+            engine.updateMoves(sourcePiece);
+            if (sourcePiece.getAvailableMoves().contains(boardMove.getTo())) {
                 engine.movePiece(boardMove.getFrom().toString(), boardMove.getTo().toString());
                 nextPlayer();
                 return true;
