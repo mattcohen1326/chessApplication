@@ -139,7 +139,9 @@ public class MoveEngine {
                         }
                     }
                 } else {
-                    removePiece(to);
+                    if (pawnBackwardsCapture(getPiece(from), to)) {
+                        removePiece(to);
+                    }
                 }
             } else {
                 removePiece(to);
@@ -452,10 +454,7 @@ public class MoveEngine {
                     List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), king.getPosition().toString());
                     if (!isBlocked(path)) {
                         if (piece.getType() == PAWN) {
-                            if (piece.getColor() == WHITE && (piece.getPosition().toString().charAt(1)) < king.getPosition().toString().charAt(1)) {
-                                return king.getColor();
-                            }
-                            if (piece.getColor() == BLACK && (piece.getPosition().toString().charAt(1)) > king.getPosition().toString().charAt(1)) {
+                            if (pawnBackwardsCapture(piece, king.getPosition().toString())) {
                                 return king.getColor();
                             }
                         }
@@ -479,12 +478,7 @@ public class MoveEngine {
                         List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), to);
                         if (!isBlocked(path)) {
                             if (piece.getType() == PAWN) {
-                                if (piece.getColor() == WHITE && (piece.getPosition().toString().charAt(1)) < to.charAt(1)) {
-                                    return true;
-                                }
-                                if (piece.getColor() == BLACK && (piece.getPosition().toString().charAt(1)) > to.charAt(1)) {
-                                    return true;
-                                }
+                                return pawnBackwardsCapture(piece, to);
                             }
                             else {
                                 return true;
@@ -502,6 +496,17 @@ public class MoveEngine {
                     }
                 }
             }
+        }
+
+        return false;
+    }
+
+    private boolean pawnBackwardsCapture(BoardPiece pawn, String to) {
+        if (pawn.getColor() == WHITE && (pawn.getPosition().toString().charAt(1)) < to.charAt(1)) {
+            return true;
+        }
+        if (pawn.getColor() == BLACK && (pawn.getPosition().toString().charAt(1)) > to.charAt(1)) {
+            return true;
         }
 
         return false;

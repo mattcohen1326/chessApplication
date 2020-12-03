@@ -32,7 +32,7 @@ public class MovementTests {
         engine = new MoveEngine(board);
     }
 
-    /*@Test
+    @Test
     public void testStartingPawnMoves() {
         // White
         for (int col = 0; col < LENGTH; col++) {
@@ -185,7 +185,7 @@ public class MovementTests {
         assertEquals(expectedMoves, Set.copyOf(whiteRook.getAvailableMoves()));
     }
 
-    */@Test
+    @Test
     public void testCheckCapture() {
         board = Board.filledBoard();
         engine = new MoveEngine(board);
