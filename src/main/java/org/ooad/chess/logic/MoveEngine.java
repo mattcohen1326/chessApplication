@@ -160,7 +160,10 @@ public class MoveEngine {
         updateEnpassant(new BoardPosition(to));
 
     }
-
+    public void testHelp(String pos){
+        BoardPosition bp = new BoardPosition(pos);
+        removePiece(pos);
+    }
     private void executeCatle(String king, String rook){
         if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
             if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){
@@ -348,13 +351,21 @@ public class MoveEngine {
         if(getPiece(getNeighbor(king,dir,dist))==null){
             return false;
         }
+
         if (getPiece(getNeighbor(king, dir, dist)).getType() == ChessmanTypes.ROOK && getNeighbor(king,dir,dist).equals(rook)) {
             for (int i = 1; i < dist; i++) {
                 if (getPiece(getNeighbor(king, dir, i)) != null) {
                     return false;
                 } else {
+
                     for (int j = 0; j < enemies.size(); j++) {
-                        if (enemies.get(j).getMovement().movePossible(enemies.get(j).getPosition().toString(), getNeighbor(king, dir, i), enemies.get(j).getFirst(), true)) {
+                        boolean check = false;
+                        for(int k = 0; k < enemies.get(j).getAvailableMoves().size(); k++) {
+                            if(enemies.get(j).getAvailableMoves().get(k).toString().equals(getNeighbor(king, dir, i))){
+                                check = true;
+                            }
+                        }
+                            if (check) {
                             return false;
                         }
                     }
@@ -369,10 +380,12 @@ public class MoveEngine {
 
     public boolean validCastle(String king, String rook) {
         if(getPiece(rook) == null || getPiece(king) == null){
+            System.out.println(1);
             return false;
         }
         ChessmanColor color = getPiece(king).getColor();
         if (!getPiece(king).getFirst() || !getPiece(rook).getFirst()) {
+            System.out.println(2);
             return false;
         }
         //IT IS A BISHOP IT SHOULD BE A ROOK
