@@ -12,9 +12,10 @@ public class HorizontalMovement implements MoveStrategy {
     @Override
     public List<String> movePath(String pre, String post) {
         int pos = Math.abs(pre.charAt(1) - post.charAt(1));
-
+        int pos2 = Math.abs(pre.charAt(0)-post.charAt(0));
+        //System.out.println(pos2);
         int add;
-
+        //System.out.println(pos);
         if (pre.charAt(0) < post.charAt(0)) {
             add = 1;
         } else {
@@ -22,14 +23,13 @@ public class HorizontalMovement implements MoveStrategy {
         }
 
         List<String> path = new ArrayList<>();
-        if( pos == 0){
-            path.add(pre);
-            path.add(post);
-        }
-        for (int i = 0; i < pos; i++) {
-            path.add(String.format("%s%s", (char) (pre.charAt(0) + (i * add)), pre.charAt(1)));
+        if(pos == 0){
+            for (int i = 0; i < pos2; i++) {
+                path.add(String.format("%s%s", (char) (pre.charAt(0) + (i * add)), pre.charAt(1)));
+            }
         }
 
+        path.add(post);
         return path;
     }
 }

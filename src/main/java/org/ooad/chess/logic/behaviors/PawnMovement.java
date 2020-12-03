@@ -50,9 +50,9 @@ public class PawnMovement implements MoveStrategy {
         }
         else {
             path.add(pre);
-            path.add(post);
         }
 
+        path.add(post);
         return path;
     }
 }

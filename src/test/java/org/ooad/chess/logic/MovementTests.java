@@ -163,7 +163,6 @@ public class MovementTests {
         board.setPiece(pos("A2"), whitePawn);
         board.setPiece(pos("A4"), new BoardPiece(PAWN, BLACK));
         engine.updateMoves(whitePawn);
-
         Set<BoardPosition> expectedMoves = Set.of(pos("A3"));
         assertEquals(expectedMoves, Set.copyOf(whitePawn.getAvailableMoves()));
     }

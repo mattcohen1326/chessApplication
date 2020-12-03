@@ -50,6 +50,7 @@ public class MoveEngine {
                                 else{
                                     //System.out.println(stringifyMove(i,j));
                                     //System.out.println(i);
+
                                     availableMoves.add(stringifyMove(i,j));
                                 }
                             }
@@ -180,6 +181,8 @@ public class MoveEngine {
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
             //System.out.println(path);
+
+            //System.out.println(path);
             for (int i = 1; i < path.size() - 1; i++) {
                 if (getPiece(path.get(i)) != null) {
                     //System.out.println(getPiece(path.get(i)).getType());
@@ -196,11 +199,13 @@ public class MoveEngine {
                         return true;
                     }
                 }
+                else{
+                    return true;
+                }
             } else {
                 return getPiece(path.get(path.size() - 1)).getColor() == current.getColor();
             }
         }
-
         return false;
     }
 
@@ -263,8 +268,11 @@ public class MoveEngine {
                 }
             }
             return false;
-        } else {
+        }
+        else {
             if (current.getType() == PAWN) {
+                //System.out.println(post + ", " + col_diff + " , " + row_diff);
+                //System.out.println(getPiece(post).getColor());
                 if (row_diff == 1 && col_diff == 1 && getPiece(post).getColor() != getPiece(pre).getColor()) {
                     return true;
                 } else {
