@@ -234,6 +234,17 @@ public class MovementTests {
         assertEquals(expected, new HashSet<>(whiteRook.getAvailableMoves()));
     }
 
+    @Test
+    public void pawnBackwardsCapture() {
+        BoardPiece pawn = new BoardPiece(PAWN, WHITE);
+        board.setPiece(pos("A5"), pawn);
+        board.setPiece(pos("B4"), new BoardPiece(BISHOP, BLACK));
+
+        engine.updateMoves(pawn);
+
+        assertFalse(pawn.getAvailableMoves().contains(pos("B4")));
+    }
+
     @After
     public void after() {
         board.print();
