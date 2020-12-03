@@ -11,10 +11,7 @@ import org.ooad.chess.model.BoardMove;
 import org.ooad.chess.model.BoardPiece;
 import org.ooad.chess.model.BoardPosition;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.ooad.chess.model.Board.LENGTH;
@@ -204,6 +201,12 @@ public class MovementTests {
         assertEquals(expectedMoves, actualMoves);
         assertEquals(BLACK, engine.isInCheck());
         assertNull(engine.isInCheckmate());
+
+        // cannot capture into check
+        board.setPiece(pos("E3"), new BoardPiece(ROOK, WHITE));
+        engine.updateMoves(blackKing);
+        assertEquals(Collections.emptyList(), blackKing.getAvailableMoves());
+        assertEquals(BLACK, engine.isInCheckmate());
     }
 
     @Test
