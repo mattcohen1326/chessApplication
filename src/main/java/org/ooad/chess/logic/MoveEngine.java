@@ -422,7 +422,17 @@ public class MoveEngine {
                 if (piece.getMovement().movePossible(piece.getPosition().toString(), king.getPosition().toString(), false, true)) {
                     List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), king.getPosition().toString());
                     if (!isBlocked(path)) {
-                        return king.getColor();
+                        if (piece.getType() == PAWN) {
+                            if (piece.getColor() == WHITE && (piece.getPosition().toString().charAt(1)) < king.getPosition().toString().charAt(1)) {
+                                return king.getColor();
+                            }
+                            if (piece.getColor() == BLACK && (piece.getPosition().toString().charAt(1)) > king.getPosition().toString().charAt(1)) {
+                                return king.getColor();
+                            }
+                        }
+                        else {
+                            return king.getColor();
+                        }
                     }
                 }
             }
@@ -439,7 +449,17 @@ public class MoveEngine {
                     if (piece.getMovement().movePossible(piece.getPosition().toString(), to, false, true)) {
                         List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), to);
                         if (!isBlocked(path)) {
-                            return true;
+                            if (piece.getType() == PAWN) {
+                                if (piece.getColor() == WHITE && (piece.getPosition().toString().charAt(1)) < to.charAt(1)) {
+                                    return true;
+                                }
+                                if (piece.getColor() == BLACK && (piece.getPosition().toString().charAt(1)) > to.charAt(1)) {
+                                    return true;
+                                }
+                            }
+                            else {
+                                return true;
+                            }
                         }
                     }
                 }
