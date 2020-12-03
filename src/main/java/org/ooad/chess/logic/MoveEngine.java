@@ -35,9 +35,6 @@ public class MoveEngine {
         for (int i = 1; i <= LENGTH; i++) {
             for (int j = 1; j <= LENGTH; j++) {
                 boolean blocked = isBlocked(piece.getMovement().movePath(position, stringifyMove(i, j)));
-                if (piece.getMovement().movePossible(position, stringifyMove(i,j), piece.getFirst(), isEliminating(position, stringifyMove(i,j)))) {
-                    System.out.printf("%s\n", stringifyMove(i,j));
-                }
                 if (!blocked && piece.getMovement().movePossible(position, stringifyMove(i, j), piece.getFirst(), isEliminating(position, stringifyMove(i, j)))) {
                     if (piece.getType() == PAWN){
                         //System.out.println((int)piece.getPosition().toString().charAt(0)-63);

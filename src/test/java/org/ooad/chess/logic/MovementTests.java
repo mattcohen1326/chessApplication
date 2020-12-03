@@ -186,12 +186,13 @@ public class MovementTests {
 
         board.setPiece(pos("E7"), new BoardPiece(QUEEN, WHITE));
 
-        BoardPiece blackKing = board.getKing(WHITE);
+        BoardPiece blackKing = board.getKing(BLACK);
         engine.updateMoves(blackKing);
 
         Set<BoardPosition> actualMoves = new HashSet<>(blackKing.getAvailableMoves());
         Set<BoardPosition> expectedMoves = Set.of(new BoardPosition("E7"));
         assertEquals(expectedMoves, actualMoves);
+        board.setPiece(pos("E7"), blackKing);
         assertNull(engine.isInCheck());
     }
 }
