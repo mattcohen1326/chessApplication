@@ -1,6 +1,5 @@
 package org.ooad.chess.logic;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.ooad.chess.logic.players.AIPlayer;
@@ -85,6 +84,7 @@ public class MovementTests {
         board.setPiece(targetLocation, new BoardPiece(PAWN, WHITE));
 
         engine.movePiece(sourceLocation.toString(), targetLocation.toString());
+        
     }
 
     @Test

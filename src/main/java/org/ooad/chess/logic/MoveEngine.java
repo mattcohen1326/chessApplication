@@ -90,9 +90,9 @@ public class MoveEngine {
      * @throws IllegalStateException if the source location is empty or the destination is full, if the move is invalid given the type, or if the move is blocked by another piece.
      */
     public void movePiece(String from, String to) {
-        if (hasPiece(to)) {
+        /*if (hasPiece(to)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is not empty", from, to, to));
-        }
+        }*/
         if (!hasPiece(from)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is empty", from, to, from));
         }

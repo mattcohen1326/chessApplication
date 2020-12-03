@@ -1,5 +1,7 @@
 package org.ooad.chess.logic;
 
+import org.ooad.chess.logic.IGameController;
+import org.ooad.chess.logic.MoveEngine;
 import org.ooad.chess.model.*;
 import org.ooad.chess.model.player.AutoPlayer;
 import org.ooad.chess.model.player.Player;
