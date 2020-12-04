@@ -1,4 +1,4 @@
-package org.ooad.chess.gui.screens;
+package org.ooad.chess.gui.scenes;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;

@@ -33,7 +33,6 @@ public class GameControllerImpl implements GameController {
         board.forEach(entry -> {
             if (entry.getPiece() != null) {
                 engine.updateMoves(entry.getPosition().toString());
-
             }
         });
     }
@@ -88,5 +87,14 @@ public class GameControllerImpl implements GameController {
     @Override
     public Board getBoard() {
         return board;
+    }
+
+    @Override
+    public Player getWinner() {
+        if (isInCheckmate()) {
+            return isInCheckmate(white) ? black : white;
+        } else {
+            return null;
+        }
     }
 }

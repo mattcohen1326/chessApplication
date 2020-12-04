@@ -5,6 +5,7 @@ import com.jogamp.opengl.GLAutoDrawable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.ooad.chess.gui.model.listener.MouseClickListener.MouseClickType;
@@ -15,6 +16,7 @@ public abstract class Component {
     protected boolean containsMouse;
 
     boolean initialized;
+    Consumer<Scene> setScene;
 
     protected double x1 = 0;
     protected double y1 = 0;
@@ -29,6 +31,10 @@ public abstract class Component {
     }
 
     public void init(GLAutoDrawable gl) {
+    }
+
+    public void setScene(Scene scene) {
+        setScene.accept(scene);
     }
 
     public void drawBeforeChildren(GL2 gl, DrawBox drawBox) {

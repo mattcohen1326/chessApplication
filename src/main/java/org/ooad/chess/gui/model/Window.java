@@ -5,7 +5,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.ooad.chess.gui.model.listener.MouseClickListener;
 import org.ooad.chess.gui.model.listener.MouseMoveListener;
-import org.ooad.chess.gui.screens.main.MainMenu;
+import org.ooad.chess.gui.scenes.main.MainMenu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -97,25 +97,22 @@ public class Window extends JFrame implements GLEventListener {
     }
 
     @Override
-    public void init(GLAutoDrawable drawable) {
-        init(activeComponent, drawable);
+    public void init(GLAutoDrawable glAutoDrawable) {
+        init(activeComponent, glAutoDrawable);
     }
 
-    private void init(Component component, GLAutoDrawable drawable) {
-        if (!component.initialized) {
-            component.init(drawable);
-            component.initialized = true;
-        }
-        component.getChildren().forEach(child -> init(child, drawable));
+    private void init(Component component, GLAutoDrawable glAutoDrawable) {
+        initialize(component, glAutoDrawable);
+        component.getChildren().forEach(child -> init(child, glAutoDrawable));
     }
 
     @Override
-    public void dispose(GLAutoDrawable drawable) {
+    public void dispose(GLAutoDrawable glAutoDrawable) {
     }
 
     @Override
-    public void display(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
+    public void display(GLAutoDrawable glAutoDrawable) {
+        GL2 gl = glAutoDrawable.getGL().getGL2();
         gl.glEnable(GL2.GL_BLEND);
         gl.glBlendFunc(GL2.GL_SRC_ALPHA, GL2.GL_ONE_MINUS_SRC_ALPHA);
         gl.glPushMatrix();
@@ -126,15 +123,12 @@ public class Window extends JFrame implements GLEventListener {
                 canvas.getWidth(),
                 canvas.getHeight(),
                 canvas.getWidth(),
-                canvas.getHeight()), gl, drawable);
+                canvas.getHeight()), gl, glAutoDrawable);
         gl.glPopMatrix();
     }
 
     private void draw(Component component, DrawBox parentDrawBox, GL2 gl, GLAutoDrawable glAutoDrawable) {
-        if (!component.initialized) {
-            component.init(glAutoDrawable);
-            component.initialized = true;
-        }
+        initialize(component, glAutoDrawable);
 
         DrawBox childDrawBox = parentDrawBox.computeChild(component);
         gl.glPushMatrix();
@@ -147,12 +141,20 @@ public class Window extends JFrame implements GLEventListener {
         gl.glPopMatrix();
     }
 
+    private void initialize(Component component, GLAutoDrawable glAutoDrawable) {
+        if (!component.initialized) {
+            component.setScene = scene -> this.activeComponent = scene;
+            component.init(glAutoDrawable);
+            component.initialized = true;
+        }
+
+    }
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
     }
 
-    public void setActiveComponent(Component screen) {
+    public void setScene(Component screen) {
         this.activeComponent = screen;
     }
 }

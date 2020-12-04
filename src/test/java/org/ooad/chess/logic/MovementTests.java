@@ -65,14 +65,15 @@ MovementTests {
     }
 
     @Test
-    public void testPawnMovesinGeneral(){
+    public void testPawnMovesinGeneral() {
         board = Board.filledBoard();
         engine = new MoveEngine(board);
-        engine.movePiece("A2","A4");
-        Assert.assertEquals(false,board.getPiece(new BoardPosition("A4")).getFirst());
-        Assert.assertEquals(true,board.getPiece(new BoardPosition("A4")).getEnp());
-        engine.movePiece("B2","B4");
+        engine.movePiece("A2", "A4");
+        Assert.assertEquals(false, board.getPiece(new BoardPosition("A4")).getFirst());
+        Assert.assertEquals(true, board.getPiece(new BoardPosition("A4")).getEnp());
+        engine.movePiece("B2", "B4");
     }
+
     @Test
     public void testCapture() {
         BoardPosition sourceLocation = pos("A1");
@@ -268,8 +269,51 @@ MovementTests {
         assertEquals(expected, new HashSet<>(blackKing.getAvailableMoves()));
     }
 
+    @Test
+    public void testMoveProtectingPiece() {
+        loadFen("rnb1kbnr/1p1ppppp/P7/2p5/2P5/B7/1p1PPPPP/q2QKBNR");
+
+        BoardPiece whiteQueen = board.getPiece(pos("D1"));
+        engine.updateMoves(whiteQueen);
+
+        assertFalse(whiteQueen.getAvailableMoves().contains(pos("C2"))); // cannot expose king to check
+    }
+
+    @Test
+    public void idk() {
+        loadFen("rnb5/pp1p3r/1qPkppp1/P2n2b1/2P1BB2/3Q3p/1PKRPP1P/6NR");
+
+        BoardPiece blackKing = board.getKing(BLACK);
+        engine.updateMoves(blackKing);
+
+        assertTrue(blackKing.getAvailableMoves().contains(pos("C6"))); // cannot expose king to check
+    }
+
+    @Test
+    public void kingAttackIntoCheck() {
+        loadFen("rnbq1bnr/ppppp1p1/8/4Qp1p/PPk5/3P4/4PPPP/RNB1KBNR");
+        BoardPiece blackKing = board.getKing(BLACK);
+        engine.updateMoves(blackKing);
+
+        assertFalse(blackKing.getAvailableMoves().contains(pos("D3"))); // cannot expose king to check
+    }
+
+    @Test
+    public void kingMoveIntoCheck() {
+        loadFen("rnbq1bnr/ppppp1p1/8/4Qp1p/PP3P2/2NP4/2k1P1PP/R1B1KBNR");
+        BoardPiece blackKing = board.getKing(BLACK);
+        engine.updateMoves(blackKing);
+
+        assertFalse(blackKing.getAvailableMoves().contains(pos("D1"))); // cannot expose king to check
+    }
+
     @After
     public void after() {
         board.print();
+    }
+
+    private void loadFen(String fen) {
+        this.board = Board.fromFen(fen);
+        this.engine = new MoveEngine(board);
     }
 }

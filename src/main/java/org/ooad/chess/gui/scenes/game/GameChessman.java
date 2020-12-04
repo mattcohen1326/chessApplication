@@ -1,4 +1,4 @@
-package org.ooad.chess.gui.screens.game;
+package org.ooad.chess.gui.scenes.game;
 
 import com.jogamp.opengl.GL2;
 import org.ooad.chess.gui.graphics.GraphicsUtils;
@@ -21,20 +21,21 @@ class GameChessman extends Component {
                     String textureName = String.format("chess-%s-%s.png",
                             type.name().toLowerCase(),
                             color.name().toLowerCase());
-                    put(getKey(color, type), loadTexture(textureName));
+                    put(getKey(color, type, false), loadTexture(textureName));
+
+                    String textureNameActive = String.format("chess-%s-%s-active.png",
+                            type.name().toLowerCase(),
+                            color.name().toLowerCase());
+                    put(getKey(color, type, true), loadTexture(textureNameActive));
                 }
             }
         }
     };
 
-    private final ChessmanColor color;
-    private final ChessmanTypes type;
     private final int texture;
 
-    GameChessman(ChessmanColor color, ChessmanTypes type) {
-        this.color = color;
-        this.type = type;
-        this.texture = TEXTURES.get(getKey(color, type));
+    GameChessman(ChessmanColor color, ChessmanTypes type, boolean active) {
+        this.texture = TEXTURES.get(getKey(color, type, active));
     }
 
     @Override
@@ -42,7 +43,7 @@ class GameChessman extends Component {
         GraphicsUtils.drawTexture(gl, texture);
     }
 
-    private static String getKey(ChessmanColor color, ChessmanTypes type) {
-        return String.format("%s-%s", color.name(), type.name());
+    private static String getKey(ChessmanColor color, ChessmanTypes type, boolean active) {
+        return String.format("%s-%s-%s", color.name(), type.name(), active);
     }
 }

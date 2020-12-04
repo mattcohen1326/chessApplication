@@ -1,4 +1,4 @@
-package org.ooad.chess.gui.screens.game;
+package org.ooad.chess.gui.scenes.game;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -21,6 +21,8 @@ import java.util.Set;
 import static com.jogamp.opengl.GL.GL_FRONT_AND_BACK;
 import static com.jogamp.opengl.GL2GL3.GL_LINE;
 import static org.ooad.chess.gui.model.listener.MouseClickListener.MouseClickType.LEFT;
+import static org.ooad.chess.model.Board.LENGTH;
+import static org.ooad.chess.model.ChessmanColor.BLACK;
 
 class GameBoard extends Component {
 
@@ -55,7 +57,12 @@ class GameBoard extends Component {
     public void drawBeforeChildren(GL2 gl, DrawBox drawBox) {
         if (game.isInCheckmate() && !completed) {
             completed = true;
-            addChild(new EndScreen());
+            addChild(new EndScreen(game.getWinner().getColor()));
+
+            // remove tiles
+            getChildren().stream()
+                    .filter(it -> it instanceof GameTile)
+                    .forEach(this::removeChild);
         }
     }
 
@@ -68,9 +75,17 @@ class GameBoard extends Component {
         int col = (int) Math.floor(x / (1 / 8.0));
         int row = (int) Math.floor((1 - y) / (1 / 8.0));
 
+        row = getPerspectiveRow(row);
+        col = getPerspectiveCol(col);
+
         BoardPosition position = new BoardPosition(row, col);
         if (selected == null) {
-            selected = position;
+            BoardPiece piece = board.getPiece(position);
+            if (piece == null || piece.getColor() == game.getCurrentPlayer().getColor()) {
+                selected = position;
+            } else {
+                selected = null;
+            }
         } else {
             boolean result = game.makeMove(new BoardMove(selected, position));
             if (result) {
@@ -101,11 +116,19 @@ class GameBoard extends Component {
         childPieces.clear();
         double x = 0;
         double y = 1;
+        double yStep = -1 / 8.0;
+
         for (int row = 0; row < 8; row++) {
+            int perspectiveRow = getPerspectiveRow(row);
             for (int col = 0; col < 8; col++) {
-                BoardPiece boardPiece = board.getPiece(new BoardPosition(row, col));
+                BoardPiece boardPiece = board.getPiece(new BoardPosition(perspectiveRow, getPerspectiveCol(col)));
                 if (boardPiece != null) {
-                    GameChessman gameChessman = new GameChessman(boardPiece.getColor(), boardPiece.getType());
+                    boolean active = game.getCurrentPlayer().getColor() == boardPiece.getColor();
+                    // TODO disable active textures for now
+                    active = false;
+                    GameChessman gameChessman = new GameChessman(boardPiece.getColor(),
+                            boardPiece.getType(),
+                            active);
                     gameChessman.setBounds(x + 1 / 8.0, y - 1 / 8.0, x, y);
 
                     addChild(gameChessman);
@@ -113,7 +136,7 @@ class GameBoard extends Component {
                 }
                 x += 1 / 8.0;
             }
-            y -= 1 / 8.0;
+            y += yStep;
             x = 0;
         }
     }
@@ -133,18 +156,30 @@ class GameBoard extends Component {
         }
     }
 
-    private static void drawOutline(GL2 gl, BoardPosition position, Color color) {
+    private void drawOutline(GL2 gl, BoardPosition position, Color color) {
         gl.glPushAttrib(GL_FRONT_AND_BACK);
         gl.glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         gl.glPushMatrix();
         gl.glTranslatef(0, 1, 0);
         gl.glScaled(1 / 8.0, -1 / 8.0, 1);
 
-        gl.glTranslatef(position.getCol(), position.getRow(), 0);
+        gl.glTranslatef(getPerspectiveCol(position.getCol()), getPerspectiveRow(position.getRow()), 0);
         GraphicsUtils.setColor(gl, color);
         gl.glLineWidth(3);
         GraphicsUtils.drawBox(gl);
         gl.glPopMatrix();
         gl.glPopAttrib();
+    }
+
+    private int getPerspectiveRow(int row) {
+        return isInverted() ? LENGTH - 1 - row : row;
+    }
+
+    private int getPerspectiveCol(int col) {
+        return isInverted() ? LENGTH - 1 - col : col;
+    }
+
+    private boolean isInverted() {
+        return game.getCurrentPlayer().getColor() == BLACK;
     }
 }

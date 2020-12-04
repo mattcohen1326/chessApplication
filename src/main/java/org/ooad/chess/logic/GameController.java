@@ -17,4 +17,7 @@ public interface GameController {
     boolean makeMove(BoardMove boardMove);
 
     Board getBoard();
+
+    Player getWinner();
+
 }

@@ -1,4 +1,4 @@
-package org.ooad.chess.gui.screens.main;
+package org.ooad.chess.gui.scenes.main;
 
 import org.ooad.chess.gui.component.FixedAspectComponent;
 import org.ooad.chess.gui.component.ImageComponent;
