@@ -24,9 +24,12 @@ public class MoveEngine {
         updateMoves(piece.getPosition().toString());
     }
 
+    /**
+     * given a piece's location, update its available moves that it can legally make
+     * @param position
+     */
     public void updateMoves(String position) {
         BoardPiece piece = getPiece(position);
-        //System.out.println(piece.getPosition().toString());
         if(piece == null){
             return;
         }
@@ -37,29 +40,15 @@ public class MoveEngine {
                 boolean blocked = isBlocked(piece.getMovement().movePath(position, stringifyMove(i, j)));
                 if (!blocked && piece.getMovement().movePossible(position, stringifyMove(i, j), piece.getFirst(), isEliminating(position, stringifyMove(i, j)))) {
                     if (piece.getType() == PAWN){
-                        //System.out.println((int)piece.getPosition().toString().charAt(0)-63);
-                        //TODO MAKE THIS SPECIFIC TO COLOR
                         switch(piece.getColor()){
                             case WHITE -> {
-                                //System.out.println(i);
-                                //System.out.println(((int)piece.getPosition().toString().charAt(1))-48);
-                                if(i < ((int)piece.getPosition().toString().charAt(1))-48 ){
-                                    continue;
-                                }
-                                else{
-                                    //System.out.println(stringifyMove(i,j));
-                                    //System.out.println(i);
-
+                                if(!(i < ((int)piece.getPosition().toString().charAt(1))-48 )){
                                     availableMoves.add(stringifyMove(i,j));
                                 }
                             }
                             case BLACK -> {
 
-                                if(i > ((int)piece.getPosition().toString().charAt(1))-48){
-                                    continue;
-                                }
-                                else{
-                                    //System.out.println(stringifyMove(i,j));
+                                if(!(i > ((int)piece.getPosition().toString().charAt(1))-48)){
                                     availableMoves.add(stringifyMove(i,j));
                                 }
                             }
@@ -73,7 +62,6 @@ public class MoveEngine {
                         }
                     }
                     else{
-                        //System.out.println(stringifyMove(i,j));
                         availableMoves.add(stringifyMove(i,j));
                     }
                 }
@@ -88,15 +76,14 @@ public class MoveEngine {
         }
         piece.setAvailableMoves(availableMoves.stream().map(BoardPosition::new).collect(Collectors.toList()));
 
-      }
+    }
 
-
-
-
+    /**
+     * Execute a move, throw an exception if the move is invalid for a given piece
+     * @param from
+     * @param to
+     */
     public void movePiece(String from, String to) {
-        /*if (hasPiece(to)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, %s is not empty", from, to, to));
-        }*/
         if (!hasPiece(from)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, %s is empty", from, to, from));
         }
@@ -110,18 +97,10 @@ public class MoveEngine {
         BoardPosition fromPosition = new BoardPosition(from);
         BoardPiece sourcePiece = board.getPiece(fromPosition);
         BoardPosition toPos = new BoardPosition(to);
-        /*if (!sourcePiece.getMovement().movePossible(from, to, sourcePiece.getFirst(), isEliminating(from, to))) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, sourcePiece.getType()));
-        }*/
         updateMoves(from);
         if (!sourcePiece.getAvailableMoves().contains(toPos)) {
             throw new IllegalStateException(String.format("Cannot move %s-%s, invalid move for type %s", from, to, board.getPiece(fromPosition).getType()));
         }
-
-        /*List<String> path = sourcePiece.getMovement().movePath(from, to);
-        if (isBlocked(path)) {
-            throw new IllegalStateException(String.format("Cannot move %s-%s, move blocked!", from, to));
-        }*/
 
         if (isEliminating(from, to)) {
             if (getPiece(from).getType() == PAWN) {
@@ -163,6 +142,12 @@ public class MoveEngine {
         updateEnpassant(new BoardPosition(to));
 
     }
+
+    /**
+     * Movement function for specialized movement castling
+     * @param king
+     * @param rook
+     */
     private void executeCatle(String king, String rook){
         if(getPiece(king).getPosition().equals(new BoardPosition("D8"))){
             if(getPiece(rook).getPosition().equals(new BoardPosition("H8"))){
@@ -199,6 +184,7 @@ public class MoveEngine {
 
         }
     }
+
     private void updateEnpassant(BoardPosition bp){
         for(int i = 0; i < board.LENGTH;i++){
             for(int j = 0; j < board.LENGTH; j++){
@@ -232,16 +218,19 @@ public class MoveEngine {
         return color_pieces;
     }
 
+    /**
+     * Loop through a piece's movement path and determine if the path is blocked by another piece
+     * @param path
+     * @return
+     */
     public boolean isBlocked(List<String> path) {
         BoardPiece current = getPiece(path.get(0));
         if(current == null){
             return true;
         }
-        boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
             for (int i = 1; i < path.size() - 1; i++) {
                 if (getPiece(path.get(i)) != null) {
-                    //System.out.println(getPiece(path.get(i)).getType());
                     return true;
                 }
             }
@@ -249,11 +238,7 @@ public class MoveEngine {
         if (getPiece(path.get(path.size() - 1)) != null) {
             if (current.getType() == PAWN) {
                 if (!(getPiece(path.get(path.size() - 1)).getColor() == current.getColor())) {
-                    if (isEliminating(current.getPosition().toString(), path.get(path.size() - 1))) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    return !isEliminating(current.getPosition().toString(), path.get(path.size() - 1));
                 }
                 else{
                     return true;
@@ -269,7 +254,6 @@ public class MoveEngine {
         int row = (int) p.charAt(1) - 48;
         int col = (int) p.charAt(0) - 64;
         String neighbor = null;
-        //if(row <= board.LENGTH && row > 0 && col <= board.LENGTH && col > 0) {
         switch (dir) {
             case "up" -> {
                 if (row + amt <= LENGTH) {
@@ -296,6 +280,12 @@ public class MoveEngine {
         return neighbor;
     }
 
+    /**
+     * Determine if a given move involves eliminating an enemy piece
+     * @param pre
+     * @param post
+     * @return
+     */
     public boolean isEliminating(String pre, String post) {
         BoardPiece current = getPiece(pre);
         BoardPiece movingTo = getPiece(post);
@@ -318,22 +308,14 @@ public class MoveEngine {
                 str.append(enp_check);
                 String s = str.toString();
                 if (getPiece(s) != null) {
-                    if (getPiece(s).getEnp() && Math.abs(col_diff) == 1 && Math.abs(row_diff) == 1) {
-                        return true;
-                    }
+                    return getPiece(s).getEnp() && Math.abs(col_diff) == 1 && Math.abs(row_diff) == 1;
                 }
             }
             return false;
         }
         else {
             if (current.getType() == PAWN) {
-                //System.out.println(post + ", " + col_diff + " , " + row_diff);
-                //System.out.println(getPiece(post).getColor());
-                if (row_diff == 1 && col_diff == 1 && getPiece(post).getColor() != getPiece(pre).getColor()) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return row_diff == 1 && col_diff == 1 && getPiece(post).getColor() != getPiece(pre).getColor();
             }
         }
 
@@ -397,29 +379,13 @@ public class MoveEngine {
         }
         check1 = castleCheck(enemies, 3, king, rook, "right");
         check2 = castleCheck(enemies, 4, king, rook, "left");
-        if(check1 || check2){
-            return true;
-        }
-        return false;
+        return check1 || check2;
     }
 
-    public BoardPosition[] getKings() {
-        BoardPosition white = null, black = null;
-        for (int i = 0; i < board.getPieces().length; i++) {
-            BoardPiece current = board.getPieces()[i];
-            if (current != null) {
-                if (current.getColor().equals(WHITE) && current.getType().equals(KING)) {
-                    white = current.getPosition();
-                }
-                if (current.getColor().equals(BLACK) && current.getType().equals(KING)) {
-                    black = current.getPosition();
-                }
-            }
-        }
-
-        return new BoardPosition[]{white, black};
-    }
-
+    /**
+     * Determine if a king is in checkmate
+     * @return color of king in checkmate or null
+     */
     public @Nullable ChessmanColor isInCheckmate() {
         for (ChessmanColor color : ChessmanColor.values()) {
             if (isInCheck() == color) {
@@ -432,17 +398,19 @@ public class MoveEngine {
         return null;
     }
 
+    /**
+     * Determines if a king is in check
+     * @return color of king in check or null
+     */
     public ChessmanColor isInCheck() {
-        BoardPosition[] kings = getKings();
-
         for (int i = 0; i < board.getPieces().length; i++) {
             BoardPiece piece = board.getPieces()[i];
             BoardPiece king = null;
             if (piece != null) {
                 if (piece.getColor().equals(WHITE)) {
-                    king = board.getPiece(kings[1]);
+                    king = board.getKing(BLACK);
                 } else {
-                    king = board.getPiece(kings[0]);
+                    king = board.getKing(WHITE);
                 }
 
                 if (piece.getMovement().movePossible(piece.getPosition().toString(), king.getPosition().toString(), false, true)) {
@@ -460,10 +428,15 @@ public class MoveEngine {
                 }
             }
         }
-
         return null;
     }
 
+    /**
+     * Check if a movement by a king would result in that king being checked by the opposing team
+     * @param to
+     * @param color
+     * @return
+     */
     public boolean movesToCheck(String to, ChessmanColor color) {
         for (int i = 0; i < board.getPieces().length; i++) {
             BoardPiece piece = board.getPieces()[i];
@@ -482,7 +455,6 @@ public class MoveEngine {
                         else {
                             if (getPiece(to) != piece) {
                                 if (getPiece(to) != null) {
-                                    System.out.printf("%s\n", to);
                                     String toRemove = path.get(path.size() - 1);
                                     path.remove(toRemove);
                                     if ((!isBlocked(path) && getPiece(path.get(path.size()-1)) == null) || path.size() == 1) {
@@ -511,6 +483,12 @@ public class MoveEngine {
         return false;
     }
 
+    /**
+     * Prevent backwards pawn movement
+     * @param pawn
+     * @param to
+     * @return
+     */
     private boolean pawnBackwardsCapture(BoardPiece pawn, String to) {
         if (pawn.getColor() == WHITE && (pawn.getPosition().toString().charAt(1)) < to.charAt(1)) {
             return true;
