@@ -239,9 +239,6 @@ public class MoveEngine {
         }
         boolean valid = true;
         if (current.getType() != ChessmanTypes.KNIGHT) {
-            //System.out.println(path);
-
-            //System.out.println(path);
             for (int i = 1; i < path.size() - 1; i++) {
                 if (getPiece(path.get(i)) != null) {
                     //System.out.println(getPiece(path.get(i)).getType());
@@ -472,7 +469,7 @@ public class MoveEngine {
             BoardPiece piece = board.getPieces()[i];
             if (piece != null) {
                 if (piece.getColor() != color) {
-                    if (piece.getMovement().movePossible(piece.getPosition().toString(), to, false, true)) {
+                    if (piece.getMovement().movePossible(piece.getPosition().toString(), to, piece.getFirst(), true)) {
                         List<String> path = piece.getMovement().movePath(piece.getPosition().toString(), to);
                         if (!isBlocked(path)) {
                             if (piece.getType() == PAWN) {
@@ -485,12 +482,14 @@ public class MoveEngine {
                         else {
                             if (getPiece(to) != piece) {
                                 if (getPiece(to) != null) {
+                                    System.out.printf("%s\n", to);
                                     String toRemove = path.get(path.size() - 1);
                                     path.remove(toRemove);
-                                    if (!isBlocked(path)) {
+                                    if ((!isBlocked(path) && getPiece(path.get(path.size()-1)) == null) || path.size() == 1) {
                                         return true;
                                     }
-                                } else {
+                                }
+                                else {
                                     boolean blocked = false;
                                     for (String s : path) {
                                         BoardPiece test = getPiece(s);
@@ -498,7 +497,9 @@ public class MoveEngine {
                                             blocked = true;
                                         }
                                     }
-                                    return !blocked;
+                                    if (!blocked) {
+                                        return true;
+                                    }
                                 }
                             }
                         }
